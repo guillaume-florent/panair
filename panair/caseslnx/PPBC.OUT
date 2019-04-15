@@ -1,0 +1,1933 @@
+
+
+ ****************************************************************************************************
+
+   dynamic memory management initialization  
+
+   max no. levels         15   max no. arrays        200   maximum scratch storage     900000   total storage provided  900000
+     addr(maplev)          0     addr(maplws)          0     addr(scratch storage)          1
+
+ ****************************************************************************************************
+  wopen call on unit    1  blocks:    10   status:     0
+  wopen call on unit    2  blocks:    10   status:     0
+  wopen call on unit    3  blocks:    10   status:     0
+1
+
+
+ *****************************************************************************
+ *                                                                           *
+ *                     a502 - pan-air technology program                     *
+ *                                                                           *
+ *               potential flow about arbitrary configurations               *
+ *               version id = ht2 (12 feb 92) boeing ver i00                 *
+ *                                                                           *
+ *                                   02/12/92                                *
+ *                                                                           *
+ *                                                                           *
+ * perturbation potential kt test cases (run with a502h)                           
+ * tamigniaux 865-6148 7k-04                                                       
+ *                                                                           *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************
+1
+0*b*input-da
+
+
+
+
+
+
+                        - list of a502 input data cards -
+     1 $title                                                                          
+     2 perturbation potential kt test cases (run with a502h)                           
+     3 tamigniaux 865-6148 7k-04                                                       
+     4 $solution                                                                       
+     5 $symmetry - xz plane of symmetry                                                
+     6 =misymm   mjsymm                                                                
+     7 1.        0.                                                                    
+     8 $mach number                                                                    
+     9 =amach                                                                          
+    10 .6                                                                              
+    11 $cases - no. of solutions                                                       
+    12 =nacase                                                                         
+    13 2.                                                                              
+    14 $angles-of-attack                                                               
+    15 =alpc                                                                           
+    16 0.                                                                              
+    17 =alpha(1) alpha(2)  alpha(3)                                                    
+    18 4.        0.                                                                    
+    19 $printout options                                                               
+    20 =isings   igeomp    isingp    icontp    ibconp    iedgep                        
+    21 5.        1.        0.        0.        1.        0.                            
+    22 =ipraic   nexdgn    ioutpr    ifmcpr                                            
+    23 .0        .0        1.        0.                                                
+    24 $references for accumulated forces and moments                                  
+    25 =xref     yref      zref      nref                                              
+    26 0.        0.        0.        1.                                                
+    27 =sref     bref      cref      dref                                              
+    28 9.        3.        3.        3.                                                
+    29 $points                                                                         
+    30 =kn                                                                             
+    31 1.                                                                              
+    32 =kt                                                                             
+    33 5.                                                                              
+    34 =nm       nn                                                          netname   
+    35 4.        4.                                                          kt5       
+    36 =x(1,1)   y(1,1)    z(1,1)    x(*,*)    y(*,*)    z(*,*)                        
+    37 0.0       0.         0.       0.0       1.        0.0                           
+    38 0.0       2.        0.0       0.0       3.        0.0                           
+    39 0.0       0.        1.0       0.0       1.        1.0                           
+    40 0.0       2.        1.0       0.0       3.        1.0                           
+    41 0.0       0.        2.0       0.0       1.        2.0                           
+    42 0.0       2.        2.0       0.0       3.        2.0                           
+    43 0.0       0.        3.0       0.0       1.        3.0                           
+    44 0.0       2.        3.0       0.0       3.        3.0                           
+    45 $points                                                                         
+    46 =kn                                                                             
+    47 1.                                                                              
+    48 =kt                                                                             
+    49 21.                                                                             
+    50 =nm       nn                                                          netname   
+    51 4.        4.                                                          kt21      
+    52 =x(1,1)   y(1,1)    z(1,1)    x(*,*)    y(*,*)    z(*,*)                        
+    53 0.0       0.        210.      1.0       0.        210.                          
+    54 2.0       0.        210.      3.0       0.        210.                          
+    55 0.0       1.        210.      1.0       1.        210.                          
+    56 2.0       1.        210.      3.0       1.        210.                          
+    57 0.0       2.        210.      1.0       2.        210.                          
+    58 2.0       2.        210.      3.0       2.        210.                          
+    59 0.0       3.        210.      1.0       3.        210.                          
+    60 2.0       3.        210.      3.0       3.        210.                          
+    61 $end of a502 inputs                                                             
+1
+
+                                      record of input processing            
+
+
+  $tit
+  $sol
+  $sym
+  $mac
+  $cas
+  $ang
+  $pri
+  $ref
+  $poi
+      kn,kt            1           5
+     network # being processed   1     4.0000    4.0000    0.0000    0.0000    0.0000    0.0000     kt5       
+
+  $poi
+      kn,kt            1          21
+     network # being processed   2     4.0000    4.0000    0.0000    0.0000    0.0000    0.0000     kt21      
+
+  $end
+
+
+  tpcrit, m     0.784004    0.600000
+    iform-1            2
+        1.           0           0                                                                                                  
+    iform-2            2
+        1.           1           1                                                                                                  
+1               ***  quick summary of a502 input  ***
+ title1: perturbation potential kt test cases (run with a502h)                           
+ title2: tamigniaux 865-6148 7k-04                                                       
+0               processing options
+            0 = datacheck.   (0=regular run,1=full datacheck,2=short datacheck) 
+            0 = s.p. flag.   (0 ==> no s.p. file (ft09) provided, 1 ==> local file ft09 with singularity values is provided) 
+            0 = aic flag.    (0 ==>  no aic file (ft04) provided, 1 ==> local file ft04 with aic-s is provided by the user) 
+            0 = b.l. flag    (0 ==> no boundary layer file requested, 1 ==> boundary layer data will be written to file ft17) 
+            0 = velocity correction index.  (0 ==> no correction, 1 ==> mclean correction, 2 ==>  boctor correction) 
+            0 = flow visualization flag.  (nonzero ==> off-body and streamline processing will be performed)
+            0 = off-body calculation type. (0 ==> mass flux, nonzero ==> velocity)
+            0 = streamline calculation type. (0 ==> mass flux, nonzero ==> velocity)
+            0 = number of off-body points.
+            0 = number of streamlines to be traced.
+0               case summary
+            2 = number of cases 
+     0.600000 = mach number 
+     0.000000 = compressibility axis angle of attack (alpc) 
+     0.000000 = compressibliity axis angle of sideslip (betc) 
+0  case       alpha          beta      mag(f-s-v)
+ ------    ----------    ----------   -----------
+      1      4.000000      0.000000      1.000000
+      2      0.000000      0.000000      1.000000
+0               symmetry options
+            1 = number of planes of symmetry 
+            1 = x-z plane of symmetry flag (0 ==> no symmetry, 1==> flow symmetry, -1 ==> flow antisymmetry) 
+            0 = x-y plane of symmetry flag (0 ==> no symmetry, 1==> flow symmetry, -1 ==> flow antisymmetry) 
+0               configuration summary
+            2 = total number of networks read in 
+           32 = total number of mesh points 
+           18 = total number of panels 
+0network id&index   #rows   #cols  kt  src  dblt  nlopt1  nropt1  nlopt2  nropt2    ipot   # pts  # pans  cpnorm  cum pt  cum pn
+ ---------- -----   -----   -----  --  ---  ----  ------  ------  ------  ------    ----    ----    ----  ------  ------  ------
+ kt5            1       4       4   5    1    12       6       9       7      -2       2      16       9       2       0       0
+ kt21           2       4       4  21    0    12       0       3       7      -4       4      16       9       2      16       9
+
+
+
+
+                material properties on network surfaces 
+
+ index, network-id     upper surface      lower surface 
+ -----  ----------     -------------      ------------- 
+     1  kt5             0 air              0 air       
+     2  kt21            0 air              0 air       
+
+
+
+            material properties for the various values of surface index
+
+   material index  temperature ratio  pressure ratio      g          p          r      k/v ratio  k/w ratio  k/p ratio
+ ----------------  -----------------  --------------  ---------  ---------  ---------  ---------  ---------  ---------
+ air            0            1.00000          1.0000    1.00000    1.00000    1.00000    1.00000    1.00000    1.00000
+                      free stream vectors for each material 
+ material & indexcase 1 vx      vy      vz  case 2 vx      vy      vz  case 3 vx      vy      vz  case 4 vx      vy      vz  
+ ----------  ----     ------  ------  ------     ------  ------  ------     ------  ------  ------     ------  ------  ------
+ air            0     0.9976  0.0000  0.0698     1.0000  0.0000  0.0000
+0               print options
+            5 = singularity grid print flag 
+            1 = panel geometry print flag  
+            0 = spline data flag  ( 0 ==> off, nonzero ==> on )
+            0 = control point information print flag 
+            1 = boundary condition data print flag 
+            0 = edge matching information print flag
+            0 = index of control point for which aic-s are printed
+            0 = edge control point flow properties print flag
+            1 = output control flag (-1 ==> no surface flow properties, 0 ==> standard output, 1 ==> short form output ) 
+            0 = force/moment control flag (-1 ==> no force and moment data, 0 ==> standard output, 1 ==> nw totals only )
+            0 = print flag for detailed cost information during execution of job 
+            1 = print flag for singularity parameter maps 
+0               abutment processing options
+   0.0000E+00 = global edge abutment tolerance specified by user.  if this value is zero, a default value will be calculated
+                later.   this default value is taken as:  .001  * (minimum panel diameter)  
+            1 = print flag controlling geometry printout  b e f o r e  the abutment processing.  ( nonzero ==> do print )
+            0 = print flag controlling geometry printout  a f t e r    the abutment processing.  ( nonzero ==> do print )
+            0 = network/abutment/abutment-intersection print flag.  ( nonzero ==> generate the cross referenced abutment listing
+            0 = control index for panel intersection checking.  ( nonzero ==> do perform the check. )  
+            1 = abutment/abutment-intersection (short listing) print flag ( 0 ==> suppress, nonzero ==> generate usual print )
+ 
+                force and moment reference parameters
+   9.0000E+00 = reference area for force and moment calculations.    (sref) 
+   3.0000E+00 = rolling moment reference length  (bref) 
+   3.0000E+00 = pitching moment reference length (cref)
+   3.0000E+00 = yawing moment reference length   (dref) 
+   0.0000E+00 = x - coordinate for the point about which moments will be calculated  (xref) 
+   0.0000E+00 = y - coordinate for the point about which moments will be calculated  (yref) 
+   0.0000E+00 = z - coordinate for the point about which moments will be calculated  (zref) 
+            3 = pressure coefficient index (nprcof) (1=linear, 2=slenderbody, 3=2nd, 4=isentropic) 
+  off-body-points network list,    2 networks
+     1    2
+
+
+  geometry input complete
+
+
+0*e*input-da
+0*b*libgeoab
+1          *****  liberalized geometry abutment analysis  *****
+0 edge abutment tolerance   =   1.4142E-03
+  minimum panel diameter    =   1.4142E+00
+  symmetry condition index  =            1
+        1 ==> phi(s-s)  
+        2 ==> phi(a-s)  
+        3 ==> phi(a-a)  
+        4 ==> phi(s-a)  
+
+
+0*b*geobfadj
+1          *****  geometry before liberalized geometry adjustment (controlled by $eat)  *****
+  network index =    1  identifier = kt5       
+  row col              nrow  ncol     -------  columns  ------->                   before adjustment of edge points by $eat
+                4 x    4  (   4),     columns    1 through   4
+   1   1 x    0.000000    0.000000    0.000000    0.000000                                                                          
+         y    0.000000    0.000000    0.000000    0.000000                                                                          
+         z    0.000000    1.000000    2.000000    3.000000                                                                          
+   2   1 x    0.000000    0.000000    0.000000    0.000000                                                                          
+         y    1.000000    1.000000    1.000000    1.000000                                                                          
+         z    0.000000    1.000000    2.000000    3.000000                                                                          
+   3   1 x    0.000000    0.000000    0.000000    0.000000                                                                          
+         y    2.000000    2.000000    2.000000    2.000000                                                                          
+         z    0.000000    1.000000    2.000000    3.000000                                                                          
+   4   1 x    0.000000    0.000000    0.000000    0.000000                                                                          
+         y    3.000000    3.000000    3.000000    3.000000                                                                          
+         z    0.000000    1.000000    2.000000    3.000000                                                                          
+ 
+  network index =    2  identifier = kt21      
+  row col              nrow  ncol     -------  columns  ------->                   before adjustment of edge points by $eat
+                4 x    4  (   4),     columns    1 through   4
+   1   1 x    0.000000    0.000000    0.000000    0.000000                                                                          
+         y    0.000000    1.000000    2.000000    3.000000                                                                          
+         z  210.000000  210.000000  210.000000  210.000000                                                                          
+   2   1 x    1.000000    1.000000    1.000000    1.000000                                                                          
+         y    0.000000    1.000000    2.000000    3.000000                                                                          
+         z  210.000000  210.000000  210.000000  210.000000                                                                          
+   3   1 x    2.000000    2.000000    2.000000    2.000000                                                                          
+         y    0.000000    1.000000    2.000000    3.000000                                                                          
+         z  210.000000  210.000000  210.000000  210.000000                                                                          
+   4   1 x    3.000000    3.000000    3.000000    3.000000                                                                          
+         y    0.000000    1.000000    2.000000    3.000000                                                                          
+         z  210.000000  210.000000  210.000000  210.000000                                                                          
+ 
+0*e*geobfadj
+
+
+               SUMMARY OF FACING SURFACES (+:upper, -:lower)
+ abutment   nw-ident  ntd  knet.edge    nw-ident  ntd  knet.edge
+        1   1st p-o-s   0    -1.0       kt5        12     1.1+                                         
+            kt5        12     1.1-      1st p-o-s   0    -1.0                                          
+        2   kt5        12     1.2-      kt5        12     1.2+      probable error: unabutted free edge
+        3   kt5        12     1.3-      kt5        12     1.3+      probable error: unabutted free edge
+        4   kt5        12     1.4-      kt5        12     1.4+      probable error: unabutted free edge
+        5   kt21       12     2.1-      kt21       12     2.1+      probable error: unabutted free edge
+        6   kt21       12     2.2-      kt21       12     2.2+      probable error: unabutted free edge
+        7   kt21       12     2.3-      kt21       12     2.3+      probable error: unabutted free edge
+        8   1st p-o-s   0    -1.0       kt21       12     2.4+                                         
+            kt21       12     2.4-      1st p-o-s   0    -1.0                                          
+
+
+  surfaces associated with various regions of the configuration 
+  region  nw-id  nw-name   dblt-type   surface    material                    r/ctr
+     1      1   kt5        analysis      upper    air           0.000000    1.000000    1.000000
+            1  *kt5        analysis      lower    air       
+ *** probable error ***  both surfaces of   1 non-wake network  noted above by *, bound this region 
+ 
+     2      2   kt21       analysis      upper    air           1.000000    1.000000  210.000000
+            2  *kt21       analysis      lower    air       
+ *** probable error ***  both surfaces of   1 non-wake network  noted above by *, bound this region 
+ 
+0*b*abutment
+1                                  abutment summary
+
+
+0abutment #   1                                                                                          
+ abutment lies on first  plane(s) of symmetry 
+                  dblt edge                        starts at ai #   1      ends at ai #   2
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   1.1  kt5        12    4                            1   2   3   4
+0abutment #   2    doublet strength matched to zero along this abutment                                        ***  warning  ***
+                  dblt edge                        starts at ai #   2      ends at ai #   3
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   1.2  kt5        12    4   mu-match                 1   2   3   4
+0abutment #   3    doublet strength matched to zero along this abutment                                        ***  warning  ***
+                  dblt edge                        starts at ai #   3      ends at ai #   4
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   1.3  kt5        12    4   mu-match                 1   2   3   4
+0abutment #   4    doublet strength matched to zero along this abutment                                        ***  warning  ***
+                  dblt edge                        starts at ai #   4      ends at ai #   1
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   1.4  kt5        12    4   mu-match                 1   2   3   4
+0abutment #   5    doublet strength matched to zero along this abutment                                        ***  warning  ***
+                  dblt edge                        starts at ai #   5      ends at ai #   6
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   2.1  kt21       12    4   mu-match                 1   2   3   4
+0abutment #   6    doublet strength matched to zero along this abutment                                        ***  warning  ***
+                  dblt edge                        starts at ai #   6      ends at ai #   7
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   2.2  kt21       12    4   mu-match                 1   2   3   4
+0abutment #   7    doublet strength matched to zero along this abutment                                        ***  warning  ***
+                  dblt edge                        starts at ai #   7      ends at ai #   8
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   2.3  kt21       12    4   mu-match                 1   2   3   4
+0abutment #   8                                                                                          
+ abutment lies on first  plane(s) of symmetry 
+                  dblt edge                        starts at ai #   8      ends at ai #   5
+  nw.edge  nw/id  type type  matching  kutta-fl    corresponding edge points ( minus (-) indicates point moved by $eat 
+   2.4  kt21       12    4                            1   2   3   4
+0*e*abutment
+
+
+  *****  no points were moved by the liberalized geometry processor (controlled by $eat)  ***** 
+
+
+
+
+   =====    summary of free wake trailing edges    ===== 
+          (semi-infinite filaments to be attached)       
+
+   nw   network-id   abmt
+  ---   ----------   ----
+ 
+  nwltrf/in            0
+
+
+  =====  summary of networks for trefftz plane analysis  =====
+
+    nw   network-id
+   ---   ----------
+ nwltrf/out            0
+ 
+   t/abtidn     0.000000
+ abtcal/anl     0.000000
+0*e*libgeoab
+
+
+
+
+                                                            panel data
+
+
+
+
+
+
+ panel no. =    1    network no. =    1    row =    1    column =    1    network panel no. =    1     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        0.0000000000        0.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        0.0000000000        1.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        1.0000000000        1.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        1.0000000000        0.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        0.5000000000        0.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    2    network no. =    1    row =    2    column =    1    network panel no. =    2     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        1.0000000000        0.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        1.0000000000        1.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        2.0000000000        1.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        2.0000000000        0.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        1.5000000000        0.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    3    network no. =    1    row =    3    column =    1    network panel no. =    3     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        2.0000000000        0.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        2.0000000000        1.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        3.0000000000        1.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        3.0000000000        0.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        2.5000000000        0.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    4    network no. =    1    row =    1    column =    2    network panel no. =    4     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        0.0000000000        1.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        0.0000000000        2.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        1.0000000000        2.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        1.0000000000        1.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        0.5000000000        1.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    5    network no. =    1    row =    2    column =    2    network panel no. =    5     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        1.0000000000        1.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        1.0000000000        2.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        2.0000000000        2.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        2.0000000000        1.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        1.5000000000        1.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    6    network no. =    1    row =    3    column =    2    network panel no. =    6     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        2.0000000000        1.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        2.0000000000        2.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        3.0000000000        2.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        3.0000000000        1.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        2.5000000000        1.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    7    network no. =    1    row =    1    column =    3    network panel no. =    7     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        0.0000000000        2.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        0.0000000000        3.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        1.0000000000        3.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        1.0000000000        2.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        0.5000000000        2.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    8    network no. =    1    row =    2    column =    3    network panel no. =    8     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        1.0000000000        2.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        1.0000000000        3.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        2.0000000000        3.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        2.0000000000        2.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        1.5000000000        2.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =    9    network no. =    1    row =    3    column =    3    network panel no. =    9     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        2.0000000000        2.0000000000       -0.4000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        2.0000000000        3.0000000000       -0.4000000000       -0.4000000000        0.0000000000
+ cp3        0.0000000000        3.0000000000        3.0000000000        0.4000000000       -0.4000000000        0.0000000000
+ cp4        0.0000000000        3.0000000000        2.0000000000        0.4000000000        0.4000000000        0.0000000000
+ r0          0.0000000000        2.5000000000        2.5000000000        0.0000000000        0.0000000000        0.0000000000
+ n0         -1.0000000000        0.0000000000        0.0000000000        0.0000000000        0.0000000000        1.0000000000
+ diam=    1.13137    xmx=    0.40000    ymx=    0.40000    d13=    1.13137    d24=    1.13137    area=    0.64000
+
+
+
+
+ panel no. =   10    network no. =    2    row =    1    column =    1    network panel no. =    1     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        0.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        1.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        1.0000000000        1.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        1.0000000000        0.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          0.5000000000        0.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   11    network no. =    2    row =    2    column =    1    network panel no. =    2     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        1.0000000000        0.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        1.0000000000        1.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        2.0000000000        1.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        2.0000000000        0.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          1.5000000000        0.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   12    network no. =    2    row =    3    column =    1    network panel no. =    3     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        2.0000000000        0.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        2.0000000000        1.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        3.0000000000        1.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        3.0000000000        0.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          2.5000000000        0.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   13    network no. =    2    row =    1    column =    2    network panel no. =    4     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        1.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        2.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        1.0000000000        2.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        1.0000000000        1.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          0.5000000000        1.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   14    network no. =    2    row =    2    column =    2    network panel no. =    5     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        1.0000000000        1.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        1.0000000000        2.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        2.0000000000        2.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        2.0000000000        1.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          1.5000000000        1.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   15    network no. =    2    row =    3    column =    2    network panel no. =    6     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        2.0000000000        1.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        2.0000000000        2.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        3.0000000000        2.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        3.0000000000        1.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          2.5000000000        1.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   16    network no. =    2    row =    1    column =    3    network panel no. =    7     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        0.0000000000        2.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        0.0000000000        3.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        1.0000000000        3.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        1.0000000000        2.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          0.5000000000        2.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   17    network no. =    2    row =    2    column =    3    network panel no. =    8     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        1.0000000000        2.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        1.0000000000        3.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        2.0000000000        3.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        2.0000000000        2.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          1.5000000000        2.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+
+
+
+
+ panel no. =   18    network no. =    2    row =    3    column =    3    network panel no. =    9     order of surface fit =    1
+
+               xg                  yg                  zg                  xl                  yl                  zl
+
+ cp1        2.0000000000        2.0000000000      210.0000000000       -0.5000000000        0.4000000000        0.0000000000
+ cp2        2.0000000000        3.0000000000      210.0000000000       -0.5000000000       -0.4000000000        0.0000000000
+ cp3        3.0000000000        3.0000000000      210.0000000000        0.5000000000       -0.4000000000        0.0000000000
+ cp4        3.0000000000        2.0000000000      210.0000000000        0.5000000000        0.4000000000        0.0000000000
+ r0          2.5000000000        2.5000000000      210.0000000000        0.0000000000        0.0000000000        0.0000000000
+ n0          0.0000000000        0.0000000000       -1.0000000000        0.0000000000        0.0000000000        0.8000000000
+ diam=    1.28062    xmx=    0.50000    ymx=    0.40000    d13=    1.28062    d24=    1.28062    area=    0.80000
+ nsngn  nctrn nctrnx   mxmn mxmnfg   nabt nfdseg
+     59     50     50     16     49      8      8
+  nctrw  nsngw   nabtw  nfdsw  nnett 
+     50     59      8      8      2
+  nctrn  nsngn    nabt nfdseg  nedgt 
+     50     59      8      8      8
+    nx7   nx17   nx27    nx28        
+     32     32    236    236
+0    singularity parameter counts  
+  naive s.p. count (based on networking)        59
+  basic s.p. count (duplicates squeezed out)    59
+       no. of unknown basic s.p.-s              33
+       no. of  known  basic s.p.-s               0
+       no. of equivalenced basic s.p.-s          0
+       no. of zeroed  basic s.p.-s              26
+  final s.p. count ( known + unknown )          33
+1          boundary condition information for network   1
+0 aic   jc  nw ifn jfn nl nr ct jce zdc abut    cu       cl      tux      tuy      tuz      tlx      tly      tlz       du       dl
+          bc                                   bet1     bet2     bet3     bet4
+    0    1   1   1   1  0  9 2    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    1   1   1   1  0  2 4    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    2   1   2   1  0  9 2    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    2   1   2   1  0  2 4    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    3   1   4   1  0  9 2    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    3   1   4   1  0  2 4    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    4   1   6   1  0  9 2    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    4   1   6   1  0  2 4    0  5   4   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    5   1   7   1  0  9 2    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    5   1   7   1  0  2 4    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0    6   1   1   2  0  9 2    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    1    6   1   1   2  7 -2 4    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    2    7   1   2   2  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                            0.0351   0.0000   0.0000   0.0000
+    3    7   1   2   2  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    4    8   1   4   2  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                            0.0351   0.0000   0.0000   0.0000
+    5    8   1   4   2  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    6    9   1   6   2  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                            0.0351   0.0000   0.0000   0.0000
+    7    9   1   6   2  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   10   1   7   2  0  9 2    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   10   1   7   2  0  2 4    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   11   1   1   4  0  9 2    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    8   11   1   1   4  7 -2 4    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    9   12   1   2   4  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                           -0.0347   0.0000   0.0000   0.0000
+   10   12   1   2   4  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+   11   13   1   4   4  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                           -0.0347   0.0000   0.0000   0.0000
+1          boundary condition information for network   1
+0 aic   jc  nw ifn jfn nl nr ct jce zdc abut    cu       cl      tux      tuy      tuz      tlx      tly      tlz       du       dl
+          bc                                   bet1     bet2     bet3     bet4
+   12   13   1   4   4  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+   13   14   1   6   4  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                           -0.0347   0.0000   0.0000   0.0000
+   14   14   1   6   4  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   15   1   7   4  0  9 2    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   15   1   7   4  0  2 4    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   16   1   1   6  0  9 2    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+   15   16   1   1   6  7 -2 4    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+   16   17   1   2   6  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                           -0.1045   0.0000   0.0000   0.0000
+   17   17   1   2   6  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+   18   18   1   4   6  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                           -0.1045   0.0000   0.0000   0.0000
+   19   18   1   4   6  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+   20   19   1   6   6  6  9 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000   0.0000
+          1  ne 4                           -0.1045   0.0000   0.0000   0.0000
+   21   19   1   6   6  7 -2 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   20   1   7   6  0  9 2    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   20   1   7   6  0  2 4    0  5   3   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   21   1   1   7  0  9 2    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   21   1   1   7  0  2 4    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   22   1   2   7  0  9 2    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   22   1   2   7  0  2 4    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   23   1   4   7  0  9 2    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   23   1   4   7  0  2 4    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   24   1   6   7  0  9 2    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   24   1   6   7  0  2 4    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   25   1   7   7  0  9 2    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 4                            0.0000   0.0000   0.0000   0.0000
+    0   25   1   7   7  0  2 4    0  5   2   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 4                            0.0000   0.0000   0.0000   0.0000
+0 boundary condition maps for network :    1
+0    aic(bc1)     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    0    0    0    0    0    0
+        2.   1.    0    2    0    9    0   16    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    0    4    0   11    0   18    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    0    6    0   13    0   20    0
+        7.   1.    0    0    0    0    0    0    0
+0    aic(bc2)     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    1    0    8    0   15    0
+        2.   1.    0    3    0   10    0   17    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    0    5    0   12    0   19    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    0    7    0   14    0   21    0
+        7.   1.    0    0    0    0    0    0    0
+0 control point map for network :    1
+0    c.p. map     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    1    6    0   11    0   16   21
+        2.   1.    2    7    0   12    0   17   22
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    3    8    0   13    0   18   23
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    4    9    0   14    0   19   24
+        7.   1.    5   10    0   15    0   20   25
+0 singularity parameter maps for network :    1
+0    src sp-s     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    0    0    0    0    0    0
+        2.   1.    0    2    0    9    0   16    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    0    4    0   11    0   18    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    0    6    0   13    0   20    0
+        7.   1.    0    0    0    0    0    0    0
+0    dbl sp-s     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    1    0    8    0   15    0
+        2.   1.    0    3    0   10    0   17    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    0    5    0   12    0   19    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    0    7    0   14    0   21    0
+        7.   1.    0    0    0    0    0    0    0
+                                                                                after nw    1 having   21 aic rows,   21 cum
+1          boundary condition information for network   2
+0 aic   jc  nw ifn jfn nl nr ct jce zdc abut    cu       cl      tux      tuy      tuz      tlx      tly      tlz       du       dl
+          bc                                   bet1     bet2     bet3     bet4
+    0   26   2   1   1  0  3 2    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   26   2   1   1  0  2 4    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   27   2   2   1  0  3 2    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   22   27   2   2   1  7 -4 4    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                            0.7390   0.7408   0.0000   0.0000
+    0   28   2   4   1  0  3 2    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   23   28   2   4   1  7 -4 4    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -0.8197  -0.8217   0.0000   0.0000
+    0   29   2   6   1  0  3 2    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   24   29   2   6   1  7 -4 4    0 -1   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -2.3784  -2.3842   0.0000   0.0000
+    0   30   2   7   1  0  3 2    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   30   2   7   1  0  2 4    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   31   2   1   2  0  3 2    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   31   2   1   2  0  2 4    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   32   2   2   2  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   25   32   2   2   2  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                            0.7832   0.7852   0.0000   0.0000
+    0   33   2   4   2  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   26   33   2   4   2  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -0.7755  -0.7773   0.0000   0.0000
+    0   34   2   6   2  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   27   34   2   6   2  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -2.3341  -2.3398   0.0000   0.0000
+    0   35   2   7   2  0  3 2    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   35   2   7   2  0  2 4    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   36   2   1   4  0  3 2    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   36   2   1   4  0  2 4    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   37   2   2   4  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   28   37   2   2   4  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                            0.7832   0.7852   0.0000   0.0000
+    0   38   2   4   4  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+1          boundary condition information for network   2
+0 aic   jc  nw ifn jfn nl nr ct jce zdc abut    cu       cl      tux      tuy      tuz      tlx      tly      tlz       du       dl
+          bc                                   bet1     bet2     bet3     bet4
+   29   38   2   4   4  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -0.7755  -0.7773   0.0000   0.0000
+    0   39   2   6   4  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   30   39   2   6   4  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -2.3341  -2.3398   0.0000   0.0000
+    0   40   2   7   4  0  3 2    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   40   2   7   4  0  2 4    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   41   2   1   6  0  3 2    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   41   2   1   6  0  2 4    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   42   2   2   6  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   31   42   2   2   6  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                            0.7832   0.7852   0.0000   0.0000
+    0   43   2   4   6  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   32   43   2   4   6  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -0.7755  -0.7773   0.0000   0.0000
+    0   44   2   6   6  0  3 2    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 1                            0.0000   0.0000   0.0000   0.0000
+   33   44   2   6   6  7 -4 4    0  0   0   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 1                           -2.3341  -2.3398   0.0000   0.0000
+    0   45   2   7   6  0  3 2    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   45   2   7   6  0  2 4    0  5   7   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   46   2   1   7  0  3 2    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   46   2   1   7  0  2 4    0  5   5   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   47   2   2   7  0  3 2    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   47   2   2   7  0  2 4    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   48   2   4   7  0  3 2    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   48   2   4   7  0  2 4    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   49   2   6   7  0  3 2    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   49   2   6   7  0  2 4    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   50   2   7   7  0  3 2    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
+          1  ne 0                            0.0000   0.0000   0.0000   0.0000
+    0   50   2   7   7  0  2 4    0  5   6   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   1.0000
+          2  ne 0                            0.0000   0.0000   0.0000   0.0000
+0 boundary condition maps for network :    2
+0    aic(bc1)     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    0    0    0    0    0    0
+        2.   1.    0    0    0    0    0    0    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    0    0    0    0    0    0    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    0    0    0    0    0    0    0
+        7.   1.    0    0    0    0    0    0    0
+0    aic(bc2)     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    0    0    0    0    0    0
+        2.   1.   22   25    0   28    0   31    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.   23   26    0   29    0   32    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.   24   27    0   30    0   33    0
+        7.   1.    0    0    0    0    0    0    0
+0 control point map for network :    2
+0    c.p. map     1.   2.   3.   4.   5.   6.   7.
+        1.   1.   26   31    0   36    0   41   46
+        2.   1.   27   32    0   37    0   42   47
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.   28   33    0   38    0   43   48
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.   29   34    0   39    0   44   49
+        7.   1.   30   35    0   40    0   45   50
+0 singularity parameter maps for network :    2
+0    src sp-s     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    0    0    0    0    0    0
+        2.   1.    0    0    0    0    0    0    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.    0    0    0    0    0    0    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.    0    0    0    0    0    0    0
+        7.   1.    0    0    0    0    0    0    0
+0    dbl sp-s     1.   2.   3.   4.   5.   6.   7.
+        1.   1.    0    0    0    0    0    0    0
+        2.   1.   22   25    0   28    0   31    0
+        3.   1.    0    0    0    0    0    0    0
+        4.   1.   23   26    0   29    0   32    0
+        5.   1.    0    0    0    0    0    0    0
+        6.   1.   24   27    0   30    0   33    0
+        7.   1.    0    0    0    0    0    0    0
+                                                                                after nw    2 having   12 aic rows,   33 cum
+1
+0*b*problem 
+
+
+
+                                                  problem and network indices
+
+
+
+
+   nnett =    2   nzmpt =   32   npant =   18   nsngt =   33   nsngu =   33   nsngk =    0   nctrt =   50   nbcot =   33
+
+
+
+ symmetry data,  nsymm =    1  nisym =    2  njsym =    1  misym =     1  mjsym =    0
+0    nw  =    1    2
+     nts =    1    0
+     ntd =   12   12
+     nm  =    4    4
+     nn  =    4    4
+     nz  =   16   16
+     np  =    9    9
+     nss =    9    0
+     nsd =   25   25
+     nc  =   25   25
+     nabc=   21   12
+     ipot=    2    4
+     nwofb    1    2
+     nca =    0   25   50
+     nbca=    0   25   50
+     mapca    0   25   50
+     nxsp=    0    0
+  wopen call on unit    4  blocks:    15   status:     0
+ size of records written by pvinfc    494
+     npngrp            1
+        1.          18                                                                                                              
+     nspgrp            1
+        1.          33                                                                                                              
+     nptgrp            1
+        1.          32                                                                                                              
+ mxcpgp:      37 mxcpbk:      37  kcpbk:      37
+  i/o calls          1         1        37
+  i/o words     154112    154112      3696
+       mxrws     mxcls    mxblks      nrpb    ncpbkc    ncpbkw     ncpgp     npabk     npagp          
+         300       512       200       300         1         1         1         0         1
+  strns calls  type 5/6 =   18   type 6 =   18
+
+
+
+    pic counts                                  panel/source  panel/doublet   block/source  block/doublet
+
+    no influence                                         0              0              0              0
+    monopole far field                                 216            666              0              0
+    dipole far field                                     4              4              0              0
+    quadrupole far field                                95            116              0              0
+    one sub-panel intermediate field                   207            311              0              0
+    two sub-panel intermediate field                   114            190              0              0
+    eight sub-panel near field                          30             45              0              0
+
+
+
+
+
+                    influence coefficient generation i/o count
+   ncalg=        0   nwrdg=           0   ncalt=        0   nwrdt=           0
+    n56chg:            4
+        1.           0          49          87          49                                                                          
+0logical flags for cp/2 iteration:
+        F = bkprnt, print flag for solver statistics
+  wopen call on unit   19  blocks:   100   status:     0
+0
+               ***********************************
+               *                                 *
+               *       condition indicators      *
+               *                                 *
+               *  uniform solution 0.133227E-14  *
+               *                                 *
+               ***********************************
+1
+0*b*solution
+                                                  simultaneous solution number    1
+
+
+
+ mach number =   0.60000    angle of attack =   4.00000    sideslip angle =   0.00000    freestream speed =   1.00000
+ compressibility factor =   0.80000   compressibility angle of attack =   0.00000   compressibility angle of sideslip =   0.00000
+ freestream velocity = (   0.99756,   0.00000,   0.06976)    compressibility direction = (   1.00000,   0.00000,   0.00000)
+
+
+                                                                 s
+     1.    3.6449E-02 -5.8704E-02  3.5054E-02 -5.8831E-02  3.5058E-02 -6.9870E-02  3.4960E-02 -3.4058E-02  8.4896E-03 -3.4893E-02
+    11.    8.6428E-03 -3.4891E-02  1.5514E-02 -3.4783E-02 -1.0130E-01  8.5960E-02 -1.0429E-01  8.7449E-02 -1.0429E-01  1.1199E-01
+    21.   -1.0402E-01 -1.4584E+00  1.5454E+00  4.8972E+00 -1.5673E+00  1.5591E+00  4.6593E+00 -1.5670E+00  1.5590E+00  4.6602E+00
+    31.   -1.5626E+00  1.5542E+00  4.6485E+00
+
+
+
+
+ network no. =   1     source network type =   1     doublet network type =  12
+
+
+
+
+
+
+                                                          singularity grid
+
+
+  ip  i j      x         y         z         s0        d0        dx        dy        dz        dm        dn       dmp       dnp
+
+
+
+
+    1 1 1    0.00000   0.00000   0.00000  -0.09233   0.00000   0.00000   0.00000   0.14201   0.00000   0.14201  -0.14201   0.00000
+    1 2 1    0.00000   0.50000   0.00000  -0.09235   0.00000   0.00000   0.00026   0.13848   0.00026   0.13848  -0.13848   0.00026
+    1 3 1    0.00000   1.00000   0.00000  -0.09236   0.00000   0.00000   0.00000   0.13725   0.00000   0.13725  -0.13725   0.00000
+    1 1 2    0.00000   0.00000   0.50000  -0.05869   0.03645   0.00000  -0.00416   0.00342  -0.00416   0.00342  -0.00342  -0.00416
+    1 2 2    0.00000   0.50000   0.50000  -0.05870   0.03505   0.00000  -0.00142   0.00173  -0.00142   0.00173  -0.00173  -0.00142
+    1 3 2    0.00000   1.00000   0.50000  -0.05872   0.03503   0.00000   0.00131   0.00153   0.00131   0.00153  -0.00153   0.00131
+    1 1 3    0.00000   0.00000   1.00000  -0.02504   0.00378   0.00000  -0.00727  -0.13445  -0.00727  -0.13445   0.13445  -0.00727
+    1 2 3    0.00000   0.50000   1.00000  -0.02506   0.00173   0.00000  -0.00226  -0.13502  -0.00226  -0.13502   0.13502  -0.00226
+    1 3 3    0.00000   1.00000   1.00000  -0.02508   0.00285   0.00000   0.00541  -0.13154   0.00541  -0.13154   0.13154   0.00541
+
+
+    2 1 1    0.00000   1.00000   0.00000  -0.09317   0.00000   0.00000   0.00000   0.13725   0.00000   0.13725  -0.13725   0.00000
+    2 2 1    0.00000   1.50000   0.00000  -0.09369   0.00000   0.00000   0.00061   0.13868   0.00061   0.13868  -0.13868   0.00061
+    2 3 1    0.00000   2.00000   0.00000  -0.09420   0.00000   0.00000   0.00000   0.13883   0.00000   0.13883  -0.13883   0.00000
+    2 1 2    0.00000   1.00000   0.50000  -0.05831   0.03503   0.00000  -0.00028   0.00176  -0.00028   0.00176  -0.00176  -0.00028
+    2 2 2    0.00000   1.50000   0.50000  -0.05883   0.03506   0.00000   0.00041   0.00156   0.00041   0.00156  -0.00156   0.00041
+    2 3 2    0.00000   2.00000   0.50000  -0.05935   0.03543   0.00000   0.00109   0.00219   0.00109   0.00219  -0.00219   0.00109
+    2 1 3    0.00000   1.00000   1.00000  -0.02346   0.00285   0.00000  -0.00524  -0.13154  -0.00524  -0.13154   0.13154  -0.00524
+    2 2 3    0.00000   1.50000   1.00000  -0.02397   0.00156   0.00000  -0.00066  -0.13556  -0.00066  -0.13556   0.13556  -0.00066
+    2 3 3    0.00000   2.00000   1.00000  -0.02449   0.00291   0.00000   0.00534  -0.13302   0.00534  -0.13302   0.13302   0.00534
+
+
+    3 1 1    0.00000   2.00000   0.00000  -0.10704   0.00000   0.00000   0.00000   0.13883   0.00000   0.13883  -0.13883   0.00000
+    3 2 1    0.00000   2.50000   0.00000  -0.10958   0.00000   0.00000  -0.02471   0.14201  -0.02471   0.14201  -0.14201  -0.02471
+    3 3 1    0.00000   3.00000   0.00000  -0.11211   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 1 2    0.00000   2.00000   0.50000  -0.06734   0.03543   0.00000   0.03354   0.00856   0.03354   0.00856  -0.00856   0.03354
+    3 2 2    0.00000   2.50000   0.50000  -0.06987   0.03496   0.00000  -0.03543  -0.00217  -0.03543  -0.00217   0.00217  -0.03543
+    3 3 2    0.00000   3.00000   0.50000  -0.07240   0.00000   0.00000  -0.10441  -0.02833  -0.10441  -0.02833   0.02833  -0.10441
+    3 1 3    0.00000   2.00000   1.00000  -0.02763   0.00291   0.00000  -0.01741  -0.13302  -0.01741  -0.13302   0.13302  -0.01741
+    3 2 3    0.00000   2.50000   1.00000  -0.03016  -0.00217   0.00000  -0.03124  -0.14636  -0.03124  -0.14636   0.14636  -0.03124
+    3 3 3    0.00000   3.00000   1.00000  -0.03270   0.00000   0.00000   0.01160   0.00000   0.01160   0.00000   0.00000   0.01160
+
+
+    4 1 1    0.00000   0.00000   1.00000  -0.02984   0.00378   0.00000  -0.00727  -0.07400  -0.00727  -0.07400   0.07400  -0.00727
+    4 2 1    0.00000   0.50000   1.00000  -0.02788   0.00173   0.00000  -0.00198  -0.07159  -0.00198  -0.07159   0.07159  -0.00198
+    4 3 1    0.00000   1.00000   1.00000  -0.02591   0.00285   0.00000   0.00541  -0.07280   0.00541  -0.07280   0.07280   0.00541
+    4 1 2    0.00000   0.00000   1.50000   0.00652  -0.03406   0.00000  -0.00247  -0.07603  -0.00247  -0.07603   0.07603  -0.00247
+    4 2 2    0.00000   0.50000   1.50000   0.00849  -0.03489   0.00000  -0.00087  -0.07492  -0.00087  -0.07492   0.07492  -0.00087
+    4 3 2    0.00000   1.00000   1.50000   0.01046  -0.03493   0.00000   0.00074  -0.07644   0.00074  -0.07644   0.07644   0.00074
+    4 1 3    0.00000   0.00000   2.00000   0.04289  -0.07358   0.00000   0.00347  -0.08072   0.00347  -0.08072   0.08072   0.00347
+    4 2 3    0.00000   0.50000   2.00000   0.04486  -0.07318   0.00000  -0.00001  -0.07824  -0.00001  -0.07824   0.07824  -0.00001
+    4 3 3    0.00000   1.00000   2.00000   0.04682  -0.07546   0.00000  -0.00723  -0.08383  -0.00723  -0.08383   0.08383  -0.00723
+
+
+    5 1 1    0.00000   1.00000   1.00000  -0.03258   0.00285   0.00000  -0.00524  -0.07280  -0.00524  -0.07280   0.07280  -0.00524
+    5 2 1    0.00000   1.50000   1.00000  -0.03076   0.00156   0.00000  -0.00184  -0.07152  -0.00184  -0.07152   0.07152  -0.00184
+    5 3 1    0.00000   2.00000   1.00000  -0.02893   0.00291   0.00000   0.00534  -0.07306   0.00534  -0.07306   0.07306   0.00534
+    5 1 2    0.00000   1.00000   1.50000   0.00682  -0.03493   0.00000   0.00083  -0.07542   0.00083  -0.07542   0.07542   0.00083
+    5 2 2    0.00000   1.50000   1.50000   0.00864  -0.03489   0.00000  -0.00069  -0.07427  -0.00069  -0.07427   0.07427  -0.00069
+    5 3 2    0.00000   2.00000   1.50000   0.01047  -0.03562   0.00000  -0.00221  -0.07752  -0.00221  -0.07752   0.07752  -0.00221
+    5 1 3    0.00000   1.00000   2.00000   0.04622  -0.07546   0.00000   0.01366  -0.08383   0.01366  -0.08383   0.08383   0.01366
+    5 2 3    0.00000   1.50000   2.00000   0.04804  -0.07271   0.00000   0.00084  -0.07702   0.00084  -0.07702   0.07702   0.00084
+    5 3 3    0.00000   2.00000   2.00000   0.04987  -0.07813   0.00000  -0.01899  -0.08901  -0.01899  -0.08901   0.08901  -0.01899
+
+
+    6 1 1    0.00000   2.00000   1.00000  -0.02705   0.00291   0.00000  -0.01741  -0.07306  -0.01741  -0.07306   0.07306  -0.01741
+    6 2 1    0.00000   2.50000   1.00000  -0.02550  -0.00217   0.00000   0.00938  -0.06351   0.00938  -0.06351   0.06351   0.00938
+    6 3 1    0.00000   3.00000   1.00000  -0.02396   0.00000   0.00000   0.01160   0.00000   0.01160   0.00000   0.00000   0.01160
+    6 1 2    0.00000   2.00000   1.50000   0.01397  -0.03562   0.00000  -0.03228  -0.09317  -0.03228  -0.09317   0.09317  -0.03228
+    6 2 2    0.00000   2.50000   1.50000   0.01551  -0.03478   0.00000   0.03562  -0.06693   0.03562  -0.06693   0.06693   0.03562
+    6 3 2    0.00000   3.00000   1.50000   0.01706   0.00000   0.00000   0.10352  -0.01413   0.10352  -0.01413   0.01413   0.10352
+    6 1 3    0.00000   2.00000   2.00000   0.05499  -0.07813   0.00000  -0.04203  -0.08901  -0.04203  -0.08901   0.08901  -0.04203
+    6 2 3    0.00000   2.50000   2.00000   0.05653  -0.06910   0.00000   0.06399  -0.07035   0.06399  -0.07035   0.07035   0.06399
+    6 3 3    0.00000   3.00000   2.00000   0.05808   0.00000   0.00000   0.19829   0.00000   0.19829   0.00000   0.00000   0.19829
+
+
+    7 1 1    0.00000   0.00000   2.00000   0.04648  -0.07358   0.00000   0.00347  -0.18444   0.00347  -0.18444   0.18444   0.00347
+    7 2 1    0.00000   0.50000   2.00000   0.04700  -0.07318   0.00000  -0.00121  -0.19760  -0.00121  -0.19760   0.19760  -0.00121
+    7 3 1    0.00000   1.00000   2.00000   0.04752  -0.07546   0.00000  -0.00723  -0.19108  -0.00723  -0.19108   0.19108  -0.00723
+    7 1 2    0.00000   0.00000   2.50000   0.08544  -0.10130   0.00000  -0.00890   0.07504  -0.00890   0.07504  -0.07504  -0.00890
+    7 2 2    0.00000   0.50000   2.50000   0.08596  -0.10429   0.00000  -0.00307   0.07318  -0.00307   0.07318  -0.07318  -0.00307
+    7 3 2    0.00000   1.00000   2.50000   0.08648  -0.10437   0.00000   0.00275   0.07479   0.00275   0.07479  -0.07479   0.00275
+    7 1 3    0.00000   0.00000   3.00000   0.12440   0.00000   0.00000   0.00000   0.33160   0.00000   0.33160  -0.33160   0.00000
+    7 2 3    0.00000   0.50000   3.00000   0.12492   0.00000   0.00000  -0.00067   0.34396  -0.00067   0.34396  -0.34396  -0.00067
+    7 3 3    0.00000   1.00000   3.00000   0.12544   0.00000   0.00000   0.00000   0.34201   0.00000   0.34201  -0.34201   0.00000
+
+
+    8 1 1    0.00000   1.00000   2.00000   0.04503  -0.07546   0.00000   0.01366  -0.19108   0.01366  -0.19108   0.19108   0.01366
+    8 2 1    0.00000   1.50000   2.00000   0.04917  -0.07271   0.00000  -0.00055  -0.19900  -0.00055  -0.19900   0.19900  -0.00055
+    8 3 1    0.00000   2.00000   2.00000   0.05330  -0.07813   0.00000  -0.01899  -0.19146  -0.01899  -0.19146   0.19146  -0.01899
+    8 1 2    0.00000   1.00000   2.50000   0.08332  -0.10437   0.00000   0.00242   0.07426   0.00242   0.07426  -0.07426   0.00242
+    8 2 2    0.00000   1.50000   2.50000   0.08745  -0.10429   0.00000  -0.00209   0.07271  -0.00209   0.07271  -0.07271  -0.00209
+    8 3 2    0.00000   2.00000   2.50000   0.09158  -0.10646   0.00000  -0.00661   0.07616  -0.00661   0.07616  -0.07616  -0.00661
+    8 1 3    0.00000   1.00000   3.00000   0.12160   0.00000   0.00000   0.00000   0.34201   0.00000   0.34201  -0.34201   0.00000
+    8 2 3    0.00000   1.50000   3.00000   0.12573   0.00000   0.00000  -0.00197   0.34443  -0.00197   0.34443  -0.34443  -0.00197
+    8 3 3    0.00000   2.00000   3.00000   0.12987   0.00000   0.00000   0.00000   0.34772   0.00000   0.34772  -0.34772   0.00000
+
+
+    9 1 1    0.00000   2.00000   2.00000   0.05737  -0.07813   0.00000  -0.04203  -0.19146  -0.04203  -0.19146   0.19146  -0.04203
+    9 2 1    0.00000   2.50000   2.00000   0.06670  -0.06910   0.00000   0.11469  -0.20879   0.11469  -0.20879   0.20879   0.11469
+    9 3 1    0.00000   3.00000   2.00000   0.07603   0.00000   0.00000   0.19829   0.00000   0.19829   0.00000   0.00000   0.19829
+    9 1 2    0.00000   2.00000   2.50000   0.10267  -0.10646   0.00000  -0.09671   0.07734  -0.09671   0.07734  -0.07734  -0.09671
+    9 2 2    0.00000   2.50000   2.50000   0.11199  -0.10402   0.00000   0.10646   0.06910   0.10646   0.06910  -0.06910   0.10646
+    9 3 2    0.00000   3.00000   2.50000   0.12132   0.00000   0.00000   0.30964   0.06661   0.30964   0.06661  -0.06661   0.30964
+    9 1 3    0.00000   2.00000   3.00000   0.14796   0.00000   0.00000   0.00000   0.34772   0.00000   0.34772  -0.34772   0.00000
+    9 2 3    0.00000   2.50000   3.00000   0.15729   0.00000   0.00000   0.06661   0.34699   0.06661   0.34699  -0.34699   0.06661
+    9 3 3    0.00000   3.00000   3.00000   0.16662   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+ network/sd            1           1
+       smat     3 x    3  (   3),     columns    1 through   3
+    1   1.   -0.058704    0.008490    0.085960                                                                                      
+    2   1.   -0.058831    0.008643    0.087449                                                                                      
+    3   1.   -0.069870    0.015514    0.111995                                                                                      
+       dmat     7 x    7  (   7),     columns    1 through   7
+    1   1.    0.000000    0.036449    0.003784   -0.034058   -0.073580   -0.101295    0.000000                                      
+    2   1.    0.000000    0.035054    0.001733   -0.034893   -0.073182   -0.104287    0.000000                                      
+    3   1.    0.000000    0.035026    0.002853   -0.034926   -0.075460   -0.104366    0.000000                                      
+    4   1.    0.000000    0.035058    0.001557   -0.034891   -0.072713   -0.104285    0.000000                                      
+    5   1.    0.000000    0.035434    0.002906   -0.035616   -0.078127   -0.106461    0.000000                                      
+    6   1.    0.000000    0.034960   -0.002173   -0.034783   -0.069104   -0.104024    0.000000                                      
+    7   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+
+
+
+
+ network no. =   2     source network type =   0     doublet network type =  12
+
+
+
+
+
+
+                                                          singularity grid
+
+
+  ip  i j      x         y         z         s0        d0        dx        dy        dz        dm        dn       dmp       dnp
+
+
+
+
+   10 1 1    0.00000   0.00000 210.00000   0.00000   0.00000  -5.71725   0.00000   0.00000  -5.71725   0.00000   0.00000  -5.71725
+   10 2 1    0.50000   0.00000 210.00000   0.00000  -1.45838  -0.01100  -0.32478   0.00000  -0.01100  -0.32478   0.32478  -0.01100
+   10 3 1    1.00000   0.00000 210.00000   0.00000  -0.11625   5.48475   0.12840   0.00000   5.48475   0.12840  -0.12840   5.48475
+   10 1 2    0.00000   0.50000 210.00000   0.00000   0.00000  -6.18106  -0.03377   0.00000  -6.18106  -0.03377   0.03377  -6.18106
+   10 2 2    0.50000   0.50000 210.00000   0.00000  -1.56728  -0.08804  -0.11082   0.00000  -0.08804  -0.11082   0.11082  -0.08804
+   10 3 2    1.00000   0.50000 210.00000   0.00000  -0.08804   6.00497  -0.01334   0.00000   6.00497  -0.01334   0.01334   6.00497
+   10 1 3    0.00000   1.00000 210.00000   0.00000   0.00000  -6.14496   0.00000   0.00000  -6.14496   0.00000   0.00000  -6.14496
+   10 2 3    0.50000   1.00000 210.00000   0.00000  -1.56919  -0.12959   0.10315   0.00000  -0.12959   0.10315  -0.10315  -0.12959
+   10 3 3    1.00000   1.00000 210.00000   0.00000  -0.13181   5.88133  -0.15952   0.00000   5.88133  -0.15952   0.15952   5.88133
+
+
+   11 1 1    1.00000   0.00000 210.00000   0.00000  -0.11625   3.07721   0.12840   0.00000   3.07721   0.12840  -0.12840   3.07721
+   11 2 1    1.50000   0.00000 210.00000   0.00000   1.54545   3.42091   0.04075   0.00000   3.42091   0.04075  -0.04075   3.42091
+   11 3 1    2.00000   0.00000 210.00000   0.00000   3.45334   4.06197  -0.63968   0.00000   4.06197  -0.63968   0.63968   4.06197
+   11 1 2    1.00000   0.50000 210.00000   0.00000  -0.08804   3.22942   0.07561   0.00000   3.22942   0.07561  -0.07561   3.22942
+   11 2 2    1.50000   0.50000 210.00000   0.00000   1.55908   3.35907   0.01377   0.00000   3.35907   0.01377  -0.01377   3.35907
+   11 3 2    2.00000   0.50000 210.00000   0.00000   3.27102   3.48871  -0.17193   0.00000   3.48871  -0.17193   0.17193   3.48871
+   11 1 3    1.00000   1.00000 210.00000   0.00000  -0.13181   3.26858  -0.15952   0.00000   3.26858  -0.15952   0.15952   3.26858
+   11 2 3    1.50000   1.00000 210.00000   0.00000   1.55922   3.41323  -0.01320   0.00000   3.41323  -0.01320   0.01320   3.41323
+   11 3 3    2.00000   1.00000 210.00000   0.00000   3.36375   3.72256   0.46051   0.00000   3.72256   0.46051  -0.46051   3.72256
+
+
+   12 1 1    2.00000   0.00000 210.00000   0.00000   3.45334   9.22894  -0.63968   0.00000   9.22894  -0.63968   0.63968   9.22894
+   12 2 1    2.50000   0.00000 210.00000   0.00000   4.89724  -3.26212  -0.71056   0.00000  -3.26212  -0.71056   0.71056  -3.26212
+   12 3 1    3.00000   0.00000 210.00000   0.00000   0.00000 -16.13563   0.00000   0.00000 -16.13563   0.00000   0.00000 -16.13563
+   12 1 2    2.00000   0.50000 210.00000   0.00000   3.27102   8.82424  -0.23220   0.00000   8.82424  -0.23220   0.23220   8.82424
+   12 2 2    2.50000   0.50000 210.00000   0.00000   4.65933  -3.27102  -0.24110   0.00000  -3.27102  -0.24110   0.24110  -3.27102
+   12 3 2    3.00000   0.50000 210.00000   0.00000   0.00000 -15.36628  -0.00509   0.00000 -15.36628  -0.00509   0.00509 -15.36628
+   12 1 3    2.00000   1.00000 210.00000   0.00000   3.36375   8.53330   0.46051   0.00000   8.53330   0.46051  -0.46051   8.53330
+   12 2 3    2.50000   1.00000 210.00000   0.00000   4.65614  -3.36884   0.22836   0.00000  -3.36884   0.22836  -0.22836  -3.36884
+   12 3 3    3.00000   1.00000 210.00000   0.00000   0.00000 -15.26081   0.00000   0.00000 -15.26081   0.00000   0.00000 -15.26081
+
+
+   13 1 1    0.00000   1.00000 210.00000   0.00000   0.00000  -6.14496   0.00000   0.00000  -6.14496   0.00000   0.00000  -6.14496
+   13 2 1    0.50000   1.00000 210.00000   0.00000  -1.56919  -0.08298   0.02337   0.00000  -0.08298   0.02337  -0.02337  -0.08298
+   13 3 1    1.00000   1.00000 210.00000   0.00000  -0.13181   5.88133   0.24633   0.00000   5.88133   0.24633  -0.24633   5.88133
+   13 1 2    0.00000   1.50000 210.00000   0.00000   0.00000  -6.19816  -0.02774   0.00000  -6.19816  -0.02774   0.02774  -6.19816
+   13 2 2    0.50000   1.50000 210.00000   0.00000  -1.56699  -0.06980  -0.01456   0.00000  -0.06980  -0.01456   0.01456  -0.06980
+   13 3 2    1.00000   1.50000 210.00000   0.00000  -0.06980   6.05856   0.03513   0.00000   6.05856   0.03513  -0.03513   6.05856
+   13 1 3    0.00000   2.00000 210.00000   0.00000   0.00000  -6.20492   0.00000   0.00000  -6.20492   0.00000   0.00000  -6.20492
+   13 2 3    0.50000   2.00000 210.00000   0.00000  -1.58375  -0.09668  -0.05249   0.00000  -0.09668  -0.05249   0.05249  -0.09668
+   13 3 3    1.00000   2.00000 210.00000   0.00000  -0.13010   5.94473  -0.24289   0.00000   5.94473  -0.24289   0.24289   5.94473
+
+
+   14 1 1    1.00000   1.00000 210.00000   0.00000  -0.13181   3.26858   0.24633   0.00000   3.26858   0.24633  -0.24633   3.26858
+   14 2 1    1.50000   1.00000 210.00000   0.00000   1.55922   3.37092  -0.03304   0.00000   3.37092  -0.03304   0.03304   3.37092
+   14 3 1    2.00000   1.00000 210.00000   0.00000   3.36375   3.72256  -0.58555   0.00000   3.72256  -0.58555   0.58555   3.72256
+   14 1 2    1.00000   1.50000 210.00000   0.00000  -0.06980   3.19626   0.08413   0.00000   3.19626   0.08413  -0.08413   3.19626
+   14 2 2    1.50000   1.50000 210.00000   0.00000   1.55902   3.31904   0.03225   0.00000   3.31904   0.03225  -0.03225   3.31904
+   14 3 2    2.00000   1.50000 210.00000   0.00000   3.24924   3.44182  -0.02950   0.00000   3.44182  -0.02950   0.02950   3.44182
+   14 1 3    1.00000   2.00000 210.00000   0.00000  -0.13010   3.26493  -0.24289   0.00000   3.26493  -0.24289   0.24289   3.26493
+   14 2 3    1.50000   2.00000 210.00000   0.00000   1.59147   3.46435   0.09755   0.00000   3.46435   0.09755  -0.09755   3.46435
+   14 3 3    2.00000   2.00000 210.00000   0.00000   3.49125   3.97776   0.84054   0.00000   3.97776   0.84054  -0.84054   3.97776
+
+
+   15 1 1    2.00000   1.00000 210.00000   0.00000   3.36375   8.53330  -0.58555   0.00000   8.53330  -0.58555   0.58555   8.53330
+   15 2 1    2.50000   1.00000 210.00000   0.00000   4.65614  -3.31470  -0.08498   0.00000  -3.31470  -0.08498   0.08498  -3.31470
+   15 3 1    3.00000   1.00000 210.00000   0.00000   0.00000 -15.26081   0.00000   0.00000 -15.26081   0.00000   0.00000 -15.26081
+   15 1 2    2.00000   1.50000 210.00000   0.00000   3.24924   8.89323   0.03591   0.00000   8.89323   0.03591  -0.03591   8.89323
+   15 2 2    2.50000   1.50000 210.00000   0.00000   4.66024  -3.24924   0.10137   0.00000  -3.24924   0.10137  -0.10137  -3.24924
+   15 3 2    3.00000   1.50000 210.00000   0.00000   0.00000 -15.39171   0.08667   0.00000 -15.39171   0.08667  -0.08667 -15.39171
+   15 1 3    2.00000   2.00000 210.00000   0.00000   3.49125   8.55629   0.84054   0.00000   8.55629   0.84054  -0.84054   8.55629
+   15 2 3    2.50000   2.00000 210.00000   0.00000   4.75751  -3.40458   0.28772   0.00000  -3.40458   0.28772  -0.28772  -3.40458
+   15 3 3    3.00000   2.00000 210.00000   0.00000   0.00000 -15.53879   0.00000   0.00000 -15.53879   0.00000   0.00000 -15.53879
+
+
+   16 1 1    0.00000   2.00000 210.00000   0.00000   0.00000  -6.20492   0.00000   0.00000  -6.20492   0.00000   0.00000  -6.20492
+   16 2 1    0.50000   2.00000 210.00000   0.00000  -1.58375  -0.38266  -1.49916   0.00000  -0.38266  -1.49916   1.49916  -0.38266
+   16 3 1    1.00000   2.00000 210.00000   0.00000  -0.13010   5.94473   0.77767   0.00000   5.94473   0.77767  -0.77767   5.94473
+   16 1 2    0.00000   2.50000 210.00000   0.00000   0.00000  -6.34727   1.10424   0.00000  -6.34727   1.10424  -1.10424  -6.34727
+   16 2 2    0.50000   2.50000 210.00000   0.00000  -1.56261   0.09685   1.58375   0.00000   0.09685   1.58375  -1.58375   0.09685
+   16 3 2    1.00000   2.50000 210.00000   0.00000   0.09685   6.54096   1.39623   0.00000   6.54096   1.39623  -1.39623   6.54096
+   16 1 3    0.00000   3.00000 210.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+   16 2 3    0.50000   3.00000 210.00000   0.00000   0.00000   1.26614   4.66667   0.00000   1.26614   4.66667  -4.66667   1.26614
+   16 3 3    1.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -0.51748   0.00000   0.00000  -0.51748   0.51748   0.00000
+
+
+   17 1 1    1.00000   2.00000 210.00000   0.00000  -0.13010   3.26493   0.77767   0.00000   3.26493   0.77767  -0.77767   3.26493
+   17 2 1    1.50000   2.00000 210.00000   0.00000   1.59147   4.16386   1.44229   0.00000   4.16386   1.44229  -1.44229   4.16386
+   17 3 1    2.00000   2.00000 210.00000   0.00000   3.49125   3.97776   1.87812   0.00000   3.97776   1.87812  -1.87812   3.97776
+   17 1 2    1.00000   2.50000 210.00000   0.00000   0.09685   2.83821  -0.41874   0.00000   2.83821  -0.41874   0.41874   2.83821
+   17 2 2    1.50000   2.50000 210.00000   0.00000   1.55418   2.99112  -1.59147   0.00000   2.99112  -1.59147   1.59147   2.99112
+   17 3 2    2.00000   2.50000 210.00000   0.00000   3.08797   3.14403  -2.85964   0.00000   3.14403  -2.85964   2.85964   3.14403
+   17 1 3    1.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -0.51748   0.00000   0.00000  -0.51748   0.51748   0.00000
+   17 2 3    1.50000   3.00000 210.00000   0.00000   0.00000   0.63161  -4.62524   0.00000   0.63161  -4.62524   4.62524   0.63161
+   17 3 3    2.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -8.86062   0.00000   0.00000  -8.86062   8.86062   0.00000
+
+
+   18 1 1    2.00000   2.00000 210.00000   0.00000   3.49125   8.55629   1.87812   0.00000   8.55629   1.87812  -1.87812   8.55629
+   18 2 1    2.50000   2.00000 210.00000   0.00000   4.75751  -3.45579   4.32167   0.00000  -3.45579   4.32167  -4.32167  -3.45579
+   18 3 1    3.00000   2.00000 210.00000   0.00000   0.00000 -15.53879   0.00000   0.00000 -15.53879   0.00000   0.00000 -15.53879
+   18 1 2    2.00000   2.50000 210.00000   0.00000   3.08797   9.33030  -5.12533   0.00000   9.33030  -5.12533   5.12533   9.33030
+   18 2 2    2.50000   2.50000 210.00000   0.00000   4.64855  -3.08797  -4.75751   0.00000  -3.08797  -4.75751   4.75751  -3.08797
+   18 3 2    3.00000   2.50000 210.00000   0.00000   0.00000 -15.50623  -2.97643   0.00000 -15.50623  -2.97643   2.97643 -15.50623
+   18 1 3    2.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -8.86062   0.00000   0.00000  -8.86062   8.86062   0.00000
+   18 2 3    2.50000   3.00000 210.00000   0.00000   0.00000  -2.97643 -13.83669   0.00000  -2.97643 -13.83669  13.83669  -2.97643
+   18 3 3    3.00000   3.00000 210.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+ network/sd            2           2
+       smat     3 x    3  (   3),     columns    1 through   3
+    1   1.    0.000000    0.000000    0.000000                                                                                      
+    2   1.    0.000000    0.000000    0.000000                                                                                      
+    3   1.    0.000000    0.000000    0.000000                                                                                      
+       dmat     7 x    7  (   7),     columns    1 through   7
+    1   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    2   1.   -1.458377   -1.567277   -1.569193   -1.566991   -1.583754   -1.562605    0.000000                                      
+    3   1.   -0.116254   -0.088044   -0.131813   -0.069802   -0.130097    0.096846    0.000000                                      
+    4   1.    1.545448    1.559078    1.559222    1.559024    1.591473    1.554178    0.000000                                      
+    5   1.    3.453340    3.271023    3.363753    3.249241    3.491251    3.087967    0.000000                                      
+    6   1.    4.897241    4.659326    4.656141    4.660238    4.757511    4.648550    0.000000                                      
+    7   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+1    network id:kt5         index:   1    source type =  1    doublet type = 12      number rows =   3    number columns =   3
+
+ 
+    jc   ip         x          y          z         wx         wy         wz      cp2ndu     cpisnu     lmachu     source    doublet
+ 
+     7    1     0.0000     0.4975     0.4975     1.0564    -0.0014     0.0722    -0.1893    -0.1890     0.6611    -0.0589     0.0351
+     8    2     0.0000     1.4975     0.4975     1.0566     0.0004     0.0720    -0.1897    -0.1894     0.6613    -0.0590     0.0351
+     9    3     0.0000     2.4975     0.4975     1.0676    -0.0350     0.0684    -0.2271    -0.2266     0.6735    -0.0701     0.0351
+ 
+    12    4     0.0000     0.4975     1.4975     0.9893    -0.0009    -0.0051     0.0307     0.0306     0.5899     0.0083    -0.0347
+    13    5     0.0000     1.4975     1.4975     0.9891    -0.0007    -0.0045     0.0311     0.0311     0.5898     0.0084    -0.0347
+    14    6     0.0000     2.4975     1.4975     0.9823     0.0351     0.0027     0.0510     0.0510     0.5834     0.0153    -0.0347
+ 
+    17    7     0.0000     0.4975     2.4975     0.9118    -0.0031     0.1416     0.2402     0.2392     0.5235     0.0858    -0.1045
+    18    8     0.0000     1.4975     2.4975     0.9103    -0.0021     0.1411     0.2445     0.2435     0.5221     0.0872    -0.1045
+    19    9     0.0000     2.4975     2.4975     0.8858     0.1055     0.1375     0.3030     0.3004     0.5039     0.1117    -0.1045
+1
+0*b*for-mom-net#-  1
+                                              force / moment data for network     1
+
+
+
+
+
+
+ totals for column      1          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000      -0.06716       0.00000       0.00000       0.00000      -0.00901       0.03505
+                                     3.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     3.00000      -0.06716       0.00000       0.00000       0.00000      -0.00901       0.03505
+
+
+ totals for column      2          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.01273       0.00000       0.00000       0.00000       0.00849      -0.00721
+                                     3.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     3.00000       0.01273       0.00000       0.00000       0.00000       0.00849      -0.00721
+
+
+ totals for column      3          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.08772       0.00000       0.00000       0.00000       0.07512      -0.04641
+                                     3.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     3.00000       0.08772       0.00000       0.00000       0.00000       0.07512      -0.04641
+
+
+ totals for network                area           fx            fy            fz            mx            my            mz
+
+
+                                     9.00000       0.03329       0.00000       0.00000       0.00000       0.07461      -0.01857
+                                     9.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     9.00000       0.03329       0.00000       0.00000       0.00000       0.07461      -0.01857
+
+
+ totals for all networks so far     area           fx            fy            fz            mx            my            mz
+
+
+                                     9.00000       0.03329       0.00000       0.00000       0.00000       0.07461      -0.01857
+                                     9.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     9.00000       0.03329       0.00000       0.00000       0.00000       0.07461      -0.01857
+0*e*for-mom 
+1    network id:kt21        index:   2    source type =  0    doublet type = 12      number rows =   3    number columns =   3
+
+ 
+    jc   ip         x          y          z         wx         wy         wz      cp2ndu     cpisnu     lmachu     source    doublet
+ 
+    32   10     0.4975     0.4975   210.0000    -0.0756    -0.1115     0.0000     1.5393     0.5516     0.1286     0.0000    -1.5667
+    33   11     1.4975     0.4975   210.0000     2.1496     0.0142     0.0000    -5.6723    -3.5963  1000.0000     0.0000     1.5506
+    34   12     2.4975     0.4975   210.0000    -2.0547    -0.2434     0.0000    -5.1193    -3.9682  1000.0000     0.0000     4.6680
+ 
+    37   13     0.4975     1.4975   210.0000    -0.0643    -0.0144     0.0000     1.5541     0.5910     0.1052     0.0000    -1.5667
+    38   14     1.4975     1.4975   210.0000     2.1240     0.0322     0.0000    -5.5016    -3.5538  1000.0000     0.0000     1.5506
+    39   15     2.4975     1.4975   210.0000    -2.0409     0.1001     0.0000    -4.9812    -3.9681  1000.0000     0.0000     4.6680
+ 
+    42   16     0.4975     2.4975   210.0000     0.0398     1.5659     0.0000    -0.8936    -1.4563     1.0631     0.0000    -1.5667
+    43   17     1.4975     2.4975   210.0000     1.9176    -1.5704     0.0000    -6.6607    -3.6910  1000.0000     0.0000     1.5506
+    44   18     2.4975     2.4975   210.0000    -1.9377    -4.7140     0.0000   -26.5493    -3.9683  1000.0000     0.0000     4.6680
+1
+0*b*for-mom-net#-  2
+                                              force / moment data for network     2
+
+
+
+
+
+
+ totals for column      1          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00000       0.00000      -1.02998      -0.16268       0.79149       0.00000
+                                     3.00000       0.00000       0.00000      -0.52032      -0.08672       0.26016       0.00000
+                                     3.00000       0.00000       0.00000      -1.55030      -0.24940       1.05165       0.00000
+
+
+ totals for column      2          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00000       0.00000      -0.99864      -0.53204       0.78118       0.00000
+                                     3.00000       0.00000       0.00000      -0.52032      -0.26016       0.26016       0.00000
+                                     3.00000       0.00000       0.00000      -1.51896      -0.79220       1.04134       0.00000
+
+
+ totals for column      3          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00000       0.00000      -3.80256      -3.23197       2.93766       0.00000
+                                     3.00000       0.00000       0.00000      -0.52032      -0.43360       0.26016       0.00000
+                                     3.00000       0.00000       0.00000      -4.32288      -3.66557       3.19782       0.00000
+
+
+ totals for network                area           fx            fy            fz            mx            my            mz
+
+
+                                     9.00000       0.00000       0.00000      -5.83117      -3.92669       4.51033       0.00000
+                                     9.00000       0.00000       0.00000      -1.56096      -0.78048       0.78048       0.00000
+                                     9.00000       0.00000       0.00000      -7.39214      -4.70717       5.29081       0.00000
+
+
+ totals for all networks so far     area           fx            fy            fz            mx            my            mz
+
+
+                                    18.00000       0.03329       0.00000      -5.83117      -3.92669       4.58493      -0.01857
+                                    18.00000       0.00000       0.00000      -1.56096      -0.78048       0.78048       0.00000
+                                    18.00000       0.03329       0.00000      -7.39214      -4.70717       5.36542      -0.01857
+0*e*for-mom 
+1
+0*b*solution
+                                                  simultaneous solution number    2
+
+
+
+ mach number =   0.60000    angle of attack =   0.00000    sideslip angle =   0.00000    freestream speed =   1.00000
+ compressibility factor =   0.80000   compressibility angle of attack =   0.00000   compressibility angle of sideslip =   0.00000
+ freestream velocity = (   1.00000,   0.00000,   0.00000)    compressibility direction = (   1.00000,   0.00000,   0.00000)
+
+
+                                                                 s
+     1.    4.9181E-07  4.1386E-05 -1.1678E-09  4.3501E-05  6.1972E-11  6.4129E-05 -5.8995E-13  1.9308E-06  2.5928E-05 -5.0501E-09
+    11.    2.6330E-05  9.8718E-11  4.7653E-05 -8.6883E-13 -2.4711E-07  4.3480E-05  5.6285E-10  4.5591E-05  2.5098E-11  6.6750E-05
+    21.   -3.1358E-13 -1.4617E+00  1.5495E+00  4.9095E+00 -1.5708E+00  1.5631E+00  4.6710E+00 -1.5706E+00  1.5631E+00  4.6719E+00
+    31.   -1.5662E+00  1.5582E+00  4.6602E+00
+
+
+
+
+ network no. =   1     source network type =   1     doublet network type =  12
+
+
+
+
+
+
+                                                          singularity grid
+
+
+  ip  i j      x         y         z         s0        d0        dx        dy        dz        dm        dn       dmp       dnp
+
+
+
+
+    1 1 1    0.00000   0.00000   0.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 2 1    0.00000   0.50000   0.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 3 1    0.00000   1.00000   0.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 1 2    0.00000   0.00000   0.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 2 2    0.00000   0.50000   0.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 3 2    0.00000   1.00000   0.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 1 3    0.00000   0.00000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 2 3    0.00000   0.50000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    1 3 3    0.00000   1.00000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    2 1 1    0.00000   1.00000   0.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 2 1    0.00000   1.50000   0.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 3 1    0.00000   2.00000   0.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 1 2    0.00000   1.00000   0.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 2 2    0.00000   1.50000   0.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 3 2    0.00000   2.00000   0.50000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 1 3    0.00000   1.00000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 2 3    0.00000   1.50000   1.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    2 3 3    0.00000   2.00000   1.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    3 1 1    0.00000   2.00000   0.00000   0.00006   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 2 1    0.00000   2.50000   0.00000   0.00007   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 3 1    0.00000   3.00000   0.00000   0.00008   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 1 2    0.00000   2.00000   0.50000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 2 2    0.00000   2.50000   0.50000   0.00006   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 3 2    0.00000   3.00000   0.50000   0.00007   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 1 3    0.00000   2.00000   1.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 2 3    0.00000   2.50000   1.00000   0.00006   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    3 3 3    0.00000   3.00000   1.00000   0.00007   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    4 1 1    0.00000   0.00000   1.00000   0.00002   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 2 1    0.00000   0.50000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 3 1    0.00000   1.00000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 1 2    0.00000   0.00000   1.50000   0.00002   0.00000   0.00000  -0.00001   0.00000  -0.00001   0.00000   0.00000  -0.00001
+    4 2 2    0.00000   0.50000   1.50000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 3 2    0.00000   1.00000   1.50000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 1 3    0.00000   0.00000   2.00000   0.00002   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 2 3    0.00000   0.50000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    4 3 3    0.00000   1.00000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    5 1 1    0.00000   1.00000   1.00000   0.00002   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 2 1    0.00000   1.50000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 3 1    0.00000   2.00000   1.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 1 2    0.00000   1.00000   1.50000   0.00002   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 2 2    0.00000   1.50000   1.50000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 3 2    0.00000   2.00000   1.50000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 1 3    0.00000   1.00000   2.00000   0.00002   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 2 3    0.00000   1.50000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    5 3 3    0.00000   2.00000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    6 1 1    0.00000   2.00000   1.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 2 1    0.00000   2.50000   1.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 3 1    0.00000   3.00000   1.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 1 2    0.00000   2.00000   1.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 2 2    0.00000   2.50000   1.50000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 3 2    0.00000   3.00000   1.50000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 1 3    0.00000   2.00000   2.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 2 3    0.00000   2.50000   2.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    6 3 3    0.00000   3.00000   2.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    7 1 1    0.00000   0.00000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 2 1    0.00000   0.50000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 3 1    0.00000   1.00000   2.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 1 2    0.00000   0.00000   2.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 2 2    0.00000   0.50000   2.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 3 2    0.00000   1.00000   2.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 1 3    0.00000   0.00000   3.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 2 3    0.00000   0.50000   3.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    7 3 3    0.00000   1.00000   3.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    8 1 1    0.00000   1.00000   2.00000   0.00003   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 2 1    0.00000   1.50000   2.00000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 3 1    0.00000   2.00000   2.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 1 2    0.00000   1.00000   2.50000   0.00004   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 2 2    0.00000   1.50000   2.50000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 3 2    0.00000   2.00000   2.50000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 1 3    0.00000   1.00000   3.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 2 3    0.00000   1.50000   3.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    8 3 3    0.00000   2.00000   3.00000   0.00006   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+
+
+    9 1 1    0.00000   2.00000   2.00000   0.00005   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 2 1    0.00000   2.50000   2.00000   0.00006   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 3 1    0.00000   3.00000   2.00000   0.00007   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 1 2    0.00000   2.00000   2.50000   0.00006   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 2 2    0.00000   2.50000   2.50000   0.00007   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 3 2    0.00000   3.00000   2.50000   0.00008   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 1 3    0.00000   2.00000   3.00000   0.00007   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 2 3    0.00000   2.50000   3.00000   0.00008   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+    9 3 3    0.00000   3.00000   3.00000   0.00009   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+ network/sd            1           1
+       smat     3 x    3  (   3),     columns    1 through   3
+    1   1.    0.000041    0.000026    0.000043                                                                                      
+    2   1.    0.000044    0.000026    0.000046                                                                                      
+    3   1.    0.000064    0.000048    0.000067                                                                                      
+       dmat     7 x    7  (   7),     columns    1 through   7
+    1   1.    0.000000    0.000000    0.000002    0.000002    0.000001    0.000000    0.000000                                      
+    2   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    3   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    4   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    5   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    6   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    7   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+
+
+
+
+ network no. =   2     source network type =   0     doublet network type =  12
+
+
+
+
+
+
+                                                          singularity grid
+
+
+  ip  i j      x         y         z         s0        d0        dx        dy        dz        dm        dn       dmp       dnp
+
+
+
+
+   10 1 1    0.00000   0.00000 210.00000   0.00000   0.00000  -5.73049   0.00000   0.00000  -5.73049   0.00000   0.00000  -5.73049
+   10 2 1    0.50000   0.00000 210.00000   0.00000  -1.46169  -0.01077  -0.32555   0.00000  -0.01077  -0.32555   0.32555  -0.01077
+   10 3 1    1.00000   0.00000 210.00000   0.00000  -0.11628   5.49794   0.12871   0.00000   5.49794   0.12871  -0.12871   5.49794
+   10 1 2    0.00000   0.50000 210.00000   0.00000   0.00000  -6.19540  -0.03385   0.00000  -6.19540  -0.03385   0.03385  -6.19540
+   10 2 2    0.50000   0.50000 210.00000   0.00000  -1.57085  -0.08800  -0.11108   0.00000  -0.08800  -0.11108   0.11108  -0.08800
+   10 3 2    1.00000   0.50000 210.00000   0.00000  -0.08800   6.01940  -0.01337   0.00000   6.01940  -0.01337   0.01337   6.01940
+   10 1 3    0.00000   1.00000 210.00000   0.00000   0.00000  -6.15921   0.00000   0.00000  -6.15921   0.00000   0.00000  -6.15921
+   10 2 3    0.50000   1.00000 210.00000   0.00000  -1.57277  -0.12965   0.10340   0.00000  -0.12965   0.10340  -0.10340  -0.12965
+   10 3 3    1.00000   1.00000 210.00000   0.00000  -0.13187   5.89547  -0.15989   0.00000   5.89547  -0.15989   0.15989   5.89547
+
+
+   11 1 1    1.00000   0.00000 210.00000   0.00000  -0.11628   3.08469   0.12871   0.00000   3.08469   0.12871  -0.12871   3.08469
+   11 2 1    1.50000   0.00000 210.00000   0.00000   1.54948   3.42927   0.04085   0.00000   3.42927   0.04085  -0.04085   3.42927
+   11 3 1    2.00000   0.00000 210.00000   0.00000   3.46204   4.07195  -0.64127   0.00000   4.07195  -0.64127   0.64127   4.07195
+   11 1 2    1.00000   0.50000 210.00000   0.00000  -0.08800   3.23728   0.07581   0.00000   3.23728   0.07581  -0.07581   3.23728
+   11 2 2    1.50000   0.50000 210.00000   0.00000   1.56314   3.36727   0.01381   0.00000   3.36727   0.01381  -0.01381   3.36727
+   11 3 2    2.00000   0.50000 210.00000   0.00000   3.27927   3.49726  -0.17235   0.00000   3.49726  -0.17235   0.17235   3.49726
+   11 1 3    1.00000   1.00000 210.00000   0.00000  -0.13187   3.27651  -0.15989   0.00000   3.27651  -0.15989   0.15989   3.27651
+   11 2 3    1.50000   1.00000 210.00000   0.00000   1.56328   3.42156  -0.01323   0.00000   3.42156  -0.01323   0.01323   3.42156
+   11 3 3    2.00000   1.00000 210.00000   0.00000   3.37223   3.73169   0.46165   0.00000   3.73169   0.46165  -0.46165   3.73169
+
+
+   12 1 1    2.00000   0.00000 210.00000   0.00000   3.46204   9.25173  -0.64127   0.00000   9.25173  -0.64127   0.64127   9.25173
+   12 2 1    2.50000   0.00000 210.00000   0.00000   4.90946  -3.27035  -0.71232   0.00000  -3.27035  -0.71232   0.71232  -3.27035
+   12 3 1    3.00000   0.00000 210.00000   0.00000   0.00000 -16.17581   0.00000   0.00000 -16.17581   0.00000   0.00000 -16.17581
+   12 1 2    2.00000   0.50000 210.00000   0.00000   3.27927   8.84602  -0.23278   0.00000   8.84602  -0.23278   0.23278   8.84602
+   12 2 2    2.50000   0.50000 210.00000   0.00000   4.67096  -3.27927  -0.24170   0.00000  -3.27927  -0.24170   0.24170  -3.27927
+   12 3 2    3.00000   0.50000 210.00000   0.00000   0.00000 -15.40456  -0.00510   0.00000 -15.40456  -0.00510   0.00510 -15.40456
+   12 1 3    2.00000   1.00000 210.00000   0.00000   3.37223   8.55436   0.46165   0.00000   8.55436   0.46165  -0.46165   8.55436
+   12 2 3    2.50000   1.00000 210.00000   0.00000   4.66776  -3.37733   0.22892   0.00000  -3.37733   0.22892  -0.22892  -3.37733
+   12 3 3    3.00000   1.00000 210.00000   0.00000   0.00000 -15.29882   0.00000   0.00000 -15.29882   0.00000   0.00000 -15.29882
+
+
+   13 1 1    0.00000   1.00000 210.00000   0.00000   0.00000  -6.15921   0.00000   0.00000  -6.15921   0.00000   0.00000  -6.15921
+   13 2 1    0.50000   1.00000 210.00000   0.00000  -1.57277  -0.08292   0.02342   0.00000  -0.08292   0.02342  -0.02342  -0.08292
+   13 3 1    1.00000   1.00000 210.00000   0.00000  -0.13187   5.89547   0.24690   0.00000   5.89547   0.24690  -0.24690   5.89547
+   13 1 2    0.00000   1.50000 210.00000   0.00000   0.00000  -6.21254  -0.02780   0.00000  -6.21254  -0.02780   0.02780  -6.21254
+   13 2 2    0.50000   1.50000 210.00000   0.00000  -1.57056  -0.06971  -0.01459   0.00000  -0.06971  -0.01459   0.01459  -0.06971
+   13 3 2    1.00000   1.50000 210.00000   0.00000  -0.06971   6.07311   0.03522   0.00000   6.07311   0.03522  -0.03522   6.07311
+   13 1 3    0.00000   2.00000 210.00000   0.00000   0.00000  -6.21930   0.00000   0.00000  -6.21930   0.00000   0.00000  -6.21930
+   13 2 3    0.50000   2.00000 210.00000   0.00000  -1.58736  -0.09665  -0.05260   0.00000  -0.09665  -0.05260   0.05260  -0.09665
+   13 3 3    1.00000   2.00000 210.00000   0.00000  -0.13014   5.95902  -0.24344   0.00000   5.95902  -0.24344   0.24344   5.95902
+
+
+   14 1 1    1.00000   1.00000 210.00000   0.00000  -0.13187   3.27651   0.24690   0.00000   3.27651   0.24690  -0.24690   3.27651
+   14 2 1    1.50000   1.00000 210.00000   0.00000   1.56328   3.37915  -0.03313   0.00000   3.37915  -0.03313   0.03313   3.37915
+   14 3 1    2.00000   1.00000 210.00000   0.00000   3.37223   3.73169  -0.58701   0.00000   3.73169  -0.58701   0.58701   3.73169
+   14 1 2    1.00000   1.50000 210.00000   0.00000  -0.06971   3.20404   0.08434   0.00000   3.20404   0.08434  -0.08434   3.20404
+   14 2 2    1.50000   1.50000 210.00000   0.00000   1.56308   3.32715   0.03233   0.00000   3.32715   0.03233  -0.03233   3.32715
+   14 3 2    2.00000   1.50000 210.00000   0.00000   3.25743   3.45025  -0.02957   0.00000   3.45025  -0.02957   0.02957   3.45025
+   14 1 3    1.00000   2.00000 210.00000   0.00000  -0.13014   3.27284  -0.24344   0.00000   3.27284  -0.24344   0.24344   3.27284
+   14 2 3    1.50000   2.00000 210.00000   0.00000   1.59562   3.47280   0.09780   0.00000   3.47280   0.09780  -0.09780   3.47280
+   14 3 3    2.00000   2.00000 210.00000   0.00000   3.50005   3.98754   0.84264   0.00000   3.98754   0.84264  -0.84264   3.98754
+
+
+   15 1 1    2.00000   1.00000 210.00000   0.00000   3.37223   8.55436  -0.58701   0.00000   8.55436  -0.58701   0.58701   8.55436
+   15 2 1    2.50000   1.00000 210.00000   0.00000   4.66776  -3.32306  -0.08519   0.00000  -3.32306  -0.08519   0.08519  -3.32306
+   15 3 1    3.00000   1.00000 210.00000   0.00000   0.00000 -15.29882   0.00000   0.00000 -15.29882   0.00000   0.00000 -15.29882
+   15 1 2    2.00000   1.50000 210.00000   0.00000   3.25743   8.91518   0.03600   0.00000   8.91518   0.03600  -0.03600   8.91518
+   15 2 2    2.50000   1.50000 210.00000   0.00000   4.67187  -3.25743   0.10162   0.00000  -3.25743   0.10162  -0.10162  -3.25743
+   15 3 2    3.00000   1.50000 210.00000   0.00000   0.00000 -15.43005   0.08689   0.00000 -15.43005   0.08689  -0.08689 -15.43005
+   15 1 3    2.00000   2.00000 210.00000   0.00000   3.50005   8.57740   0.84264   0.00000   8.57740   0.84264  -0.84264   8.57740
+   15 2 3    2.50000   2.00000 210.00000   0.00000   4.76939  -3.41316   0.28844   0.00000  -3.41316   0.28844  -0.28844  -3.41316
+   15 3 3    3.00000   2.00000 210.00000   0.00000   0.00000 -15.57750   0.00000   0.00000 -15.57750   0.00000   0.00000 -15.57750
+
+
+   16 1 1    0.00000   2.00000 210.00000   0.00000   0.00000  -6.21930   0.00000   0.00000  -6.21930   0.00000   0.00000  -6.21930
+   16 2 1    0.50000   2.00000 210.00000   0.00000  -1.58736  -0.38323  -1.50259   0.00000  -0.38323  -1.50259   1.50259  -0.38323
+   16 3 1    1.00000   2.00000 210.00000   0.00000  -0.13014   5.95902   0.77979   0.00000   5.95902   0.77979  -0.77979   5.95902
+   16 1 2    0.00000   2.50000 210.00000   0.00000   0.00000  -6.36201   1.10679   0.00000  -6.36201   1.10679  -1.10679  -6.36201
+   16 2 2    0.50000   2.50000 210.00000   0.00000  -1.56617   0.09734   1.58736   0.00000   0.09734   1.58736  -1.58736   0.09734
+   16 3 2    1.00000   2.50000 210.00000   0.00000   0.09734   6.55670   1.39934   0.00000   6.55670   1.39934  -1.39934   6.55670
+   16 1 3    0.00000   3.00000 210.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+   16 2 3    0.50000   3.00000 210.00000   0.00000   0.00000   1.26920   4.67731   0.00000   1.26920   4.67731  -4.67731   1.26920
+   16 3 3    1.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -0.51951   0.00000   0.00000  -0.51951   0.51951   0.00000
+
+
+   17 1 1    1.00000   2.00000 210.00000   0.00000  -0.13014   3.27284   0.77979   0.00000   3.27284   0.77979  -0.77979   3.27284
+   17 2 1    1.50000   2.00000 210.00000   0.00000   1.59562   4.17402   1.44605   0.00000   4.17402   1.44605  -1.44605   4.17402
+   17 3 1    2.00000   2.00000 210.00000   0.00000   3.50005   3.98754   1.88292   0.00000   3.98754   1.88292  -1.88292   3.98754
+   17 1 2    1.00000   2.50000 210.00000   0.00000   0.09734   2.84511  -0.42003   0.00000   2.84511  -0.42003   0.42003   2.84511
+   17 2 2    1.50000   2.50000 210.00000   0.00000   1.55823   2.99842  -1.59562   0.00000   2.99842  -1.59562   1.59562   2.99842
+   17 3 2    2.00000   2.50000 210.00000   0.00000   3.09577   3.15174  -2.86689   0.00000   3.15174  -2.86689   2.86689   3.15174
+   17 1 3    1.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -0.51951   0.00000   0.00000  -0.51951   0.51951   0.00000
+   17 2 3    1.50000   3.00000 210.00000   0.00000   0.00000   0.63316  -4.63729   0.00000   0.63316  -4.63729   4.63729   0.63316
+   17 3 3    2.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -8.88302   0.00000   0.00000  -8.88302   8.88302   0.00000
+
+
+   18 1 1    2.00000   2.00000 210.00000   0.00000   3.50005   8.57740   1.88292   0.00000   8.57740   1.88292  -1.88292   8.57740
+   18 2 1    2.50000   2.00000 210.00000   0.00000   4.76939  -3.46453   4.33245   0.00000  -3.46453   4.33245  -4.33245  -3.46453
+   18 3 1    3.00000   2.00000 210.00000   0.00000   0.00000 -15.57750   0.00000   0.00000 -15.57750   0.00000   0.00000 -15.57750
+   18 1 2    2.00000   2.50000 210.00000   0.00000   3.09577   9.35331  -5.13815   0.00000   9.35331  -5.13815   5.13815   9.35331
+   18 2 2    2.50000   2.50000 210.00000   0.00000   4.66015  -3.09577  -4.76939   0.00000  -3.09577  -4.76939   4.76939  -3.09577
+   18 3 2    3.00000   2.50000 210.00000   0.00000   0.00000 -15.54485  -2.98385   0.00000 -15.54485  -2.98385   2.98385 -15.54485
+   18 1 3    2.00000   3.00000 210.00000   0.00000   0.00000   0.00000  -8.88302   0.00000   0.00000  -8.88302   8.88302   0.00000
+   18 2 3    2.50000   3.00000 210.00000   0.00000   0.00000  -2.98385 -13.87123   0.00000  -2.98385 -13.87123  13.87123  -2.98385
+   18 3 3    3.00000   3.00000 210.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+ network/sd            2           2
+       smat     3 x    3  (   3),     columns    1 through   3
+    1   1.    0.000000    0.000000    0.000000                                                                                      
+    2   1.    0.000000    0.000000    0.000000                                                                                      
+    3   1.    0.000000    0.000000    0.000000                                                                                      
+       dmat     7 x    7  (   7),     columns    1 through   7
+    1   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+    2   1.   -1.461692   -1.570850   -1.572770   -1.570562   -1.587360   -1.566167    0.000000                                      
+    3   1.   -0.116278   -0.087999   -0.131870   -0.069713   -0.130139    0.097343    0.000000                                      
+    4   1.    1.549476    1.563140    1.563284    1.563085    1.595618    1.558226    0.000000                                      
+    5   1.    3.462042    3.279271    3.372231    3.257434    3.500050    3.095767    0.000000                                      
+    6   1.    4.909463    4.670957    4.667764    4.671871    4.769388    4.660154    0.000000                                      
+    7   1.    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000    0.000000                                      
+1    network id:kt5         index:   1    source type =  1    doublet type = 12      number rows =   3    number columns =   3
+
+ 
+    jc   ip         x          y          z         wx         wy         wz      cp2ndu     cpisnu     lmachu     source    doublet
+ 
+     7    1     0.0000     0.4975     0.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+     8    2     0.0000     1.4975     0.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+     9    3     0.0000     2.4975     0.4975     0.9999     0.0000     0.0000     0.0002     0.0002     0.5999     0.0001     0.0000
+ 
+    12    4     0.0000     0.4975     1.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+    13    5     0.0000     1.4975     1.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+    14    6     0.0000     2.4975     1.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+ 
+    17    7     0.0000     0.4975     2.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+    18    8     0.0000     1.4975     2.4975     1.0000     0.0000     0.0000     0.0001     0.0001     0.6000     0.0000     0.0000
+    19    9     0.0000     2.4975     2.4975     0.9999     0.0000     0.0000     0.0002     0.0002     0.5999     0.0001     0.0000
+1
+0*b*for-mom-net#-  1
+                                              force / moment data for network     1
+
+
+
+
+
+
+ totals for column      1          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00005       0.00000       0.00000       0.00000       0.00001      -0.00003
+                                     3.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     3.00000       0.00005       0.00000       0.00000       0.00000       0.00001      -0.00003
+
+
+ totals for column      2          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00003       0.00000       0.00000       0.00000       0.00002      -0.00002
+                                     3.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     3.00000       0.00003       0.00000       0.00000       0.00000       0.00002      -0.00002
+
+
+ totals for column      3          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00005       0.00000       0.00000       0.00000       0.00005      -0.00003
+                                     3.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     3.00000       0.00005       0.00000       0.00000       0.00000       0.00005      -0.00003
+
+
+ totals for network                area           fx            fy            fz            mx            my            mz
+
+
+                                     9.00000       0.00014       0.00000       0.00000       0.00000       0.00007      -0.00008
+                                     9.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     9.00000       0.00014       0.00000       0.00000       0.00000       0.00007      -0.00008
+
+
+ totals for all networks so far     area           fx            fy            fz            mx            my            mz
+
+
+                                     9.00000       0.00014       0.00000       0.00000       0.00000       0.00007      -0.00008
+                                     9.00000       0.00000       0.00000       0.00000       0.00000       0.00000       0.00000
+                                     9.00000       0.00014       0.00000       0.00000       0.00000       0.00007      -0.00008
+0*e*for-mom 
+1    network id:kt21        index:   2    source type =  0    doublet type = 12      number rows =   3    number columns =   3
+
+ 
+    jc   ip         x          y          z         wx         wy         wz      cp2ndu     cpisnu     lmachu     source    doublet
+ 
+    32   10     0.4975     0.4975   210.0000    -0.0756    -0.1118     0.0000     1.5411     0.5494     0.1288     0.0000    -1.5703
+    33   11     1.4975     0.4975   210.0000     2.1548     0.0143     0.0000    -5.6929    -3.6033  1000.0000     0.0000     1.5547
+    34   12     2.4975     0.4975   210.0000    -2.0599    -0.2440     0.0000    -5.1270    -3.9682  1000.0000     0.0000     4.6797
+ 
+    37   13     0.4975     1.4975   210.0000    -0.0643    -0.0145     0.0000     1.5558     0.5891     0.1053     0.0000    -1.5703
+    38   14     1.4975     1.4975   210.0000     2.1291     0.0323     0.0000    -5.5218    -3.5611  1000.0000     0.0000     1.5547
+    39   15     2.4975     1.4975   210.0000    -2.0460     0.1004     0.0000    -4.9885    -3.9681  1000.0000     0.0000     4.6797
+ 
+    42   16     0.4975     2.4975   210.0000     0.0401     1.5695     0.0000    -0.9034    -1.4651     1.0672     0.0000    -1.5703
+    43   17     1.4975     2.4975   210.0000     1.9223    -1.5745     0.0000    -6.6902    -3.6972  1000.0000     0.0000     1.5547
+    44   18     2.4975     2.4975   210.0000    -1.9426    -4.7257     0.0000   -26.6666    -3.9683  1000.0000     0.0000     4.6797
+1
+0*b*for-mom-net#-  2
+                                              force / moment data for network     2
+
+
+
+
+
+
+ totals for column      1          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00000       0.00000      -1.03293      -0.16313       0.79336       0.00000
+                                     3.00000       0.00000       0.00000      -0.52083      -0.08681       0.26042       0.00000
+                                     3.00000       0.00000       0.00000      -1.55376      -0.24993       1.05377       0.00000
+
+
+ totals for column      2          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00000       0.00000      -1.00152      -0.53366       0.78304       0.00000
+                                     3.00000       0.00000       0.00000      -0.52083      -0.26042       0.26042       0.00000
+                                     3.00000       0.00000       0.00000      -1.52235      -0.79407       1.04346       0.00000
+
+
+ totals for column      3          area           fx            fy            fz            mx            my            mz
+
+
+                                     3.00000       0.00000       0.00000      -3.82002      -3.24686       2.95070       0.00000
+                                     3.00000       0.00000       0.00000      -0.52083      -0.43403       0.26042       0.00000
+                                     3.00000       0.00000       0.00000      -4.34085      -3.68088       3.21112       0.00000
+
+
+ totals for network                area           fx            fy            fz            mx            my            mz
+
+
+                                     9.00000       0.00000       0.00000      -5.85447      -3.94364       4.52710       0.00000
+                                     9.00000       0.00000       0.00000      -1.56250      -0.78125       0.78125       0.00000
+                                     9.00000       0.00000       0.00000      -7.41697      -4.72489       5.30835       0.00000
+
+
+ totals for all networks so far     area           fx            fy            fz            mx            my            mz
+
+
+                                    18.00000       0.00014       0.00000      -5.85447      -3.94364       4.52717      -0.00008
+                                    18.00000       0.00000       0.00000      -1.56250      -0.78125       0.78125       0.00000
+                                    18.00000       0.00014       0.00000      -7.41697      -4.72489       5.30842      -0.00008
+0*e*for-mom 
+1
+
+ ***************************************
+ *                                     *
+ * no force and moment summary appears *
+ * because no networks remained after  *
+ * networks were deleted, or else no   *
+ * composite networks were available   *
+ * for the default option              *
+ *                                     *
+ ***************************************
+
+
+  Timing Breakdown for Subroutine OUTPUT 
+ singularity matrices       0.000000
+ get limits for sectnp      0.000000
+ singularity grid           0.000000
+ Trefftz analysis           0.000000
+ Standard printout          0.000000
+ Force and Moment calc      0.000000
+ Sectional Properties       0.000000
+ agps file (agpsfl)         0.000000
+ force/moment summary       0.000000
+ Boundary layer output      0.000000
+ Totals of Above            0.000000
+ Total for subroutine       0.000000
+ rwms pkg, lldict: 97341
+     llindx          100
+        1.         302        4303       22304       24577          -1          -1          -1          -1          -1          -1  
+       11.          -1       48579          -1       60580       24152          -1          -1          -1       96585       96582  
+       21.          -1          -1          -1       24173          -1           0          -1       96588          -1          -1  
+       31.          -1          -1          -1          -1          -1          -1          -1       24375          -1          -1  
+       41.          -1          -1          -1          -1          -1          -1          -1          -1       96590          -1  
+       51.          -1          -1          -1          -1          -1          -1          -1          -1          -1          -1  
+       61.          -1          -1          -1          -1          -1          -1          -1       72581          -1          -1  
+       71.          -1          -1          -1          -1          -1          -1          -1          -1          -1          -1  
+       81.          -1          -1          -1          -1          -1          -1          -1          -1          -1          -1  
+       91.          -1          -1          -1          -1          -1          -1          -1          -1          -1          -1  
+     nrecmx          100
+        1.        4001       18001        1848       24002           0           0           0           0           0           0  
+       11.           0       12001           0       12001          21           0           0           0           3           3  
+       21.           0           0           0         202           0         302           0           2           0           0  
+       31.           0           0           0           0           0           0           0         202           0           0  
+       41.           0           0           0           0           0           0           0           0         751           0  
+       51.           0           0           0           0           0           0           0           0           0           0  
+       61.           0           0           0           0           0           0           0       24001           0           0  
+       71.           0           0           0           0           0           0           0           0           0           0  
+       81.           0           0           0           0           0           0           0           0           0           0  
+       91.           0           0           0           0           0           0           0           0           0           0  
+1        job cost summary by function   
+
+ function elapsed-t   total-t prut-secs  cpu-secs cmp-units  dsk-reqs  dsk-blks ssd-units  ssd-reqs   fcn ccus  $'s @ p1
+ --------  --------   -------   -------   -------   -------   -------   -------   -------   -------   --------   -------
+ initialz      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ input         0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ init          0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ geometry      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ singular      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ cntrl pt      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ bndy cnd      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ ffgen         0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ pic cost      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ aic cost      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ mtrxsoln      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ pppdq         0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ output        0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+ totals   (excl. line 1)           0.00      0.00      0.00      0.00      0.00      0.00      0.00       0.00      0.00
+
+
+
+     ccu estimates for the various cost components
+ initialz                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ input                                       0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ init                                        0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ geometry                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ singular                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ cntrl pt                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ bndy cnd                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ ffgen                                       0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ pic cost                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ aic cost                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ mtrxsoln                                    0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ pppdq                                       0.00      0.00      0.00      0.00      0.00      0.00       0.00
+ output                                      0.00      0.00      0.00      0.00      0.00      0.00       0.00
+0totals                                      0.00      0.00      0.00      0.00      0.00      0.00       0.00
+
+
+ ****************************************************************************************************
+
+  dynamic memory summary          used   allocated
+  maximum number of levels           7          15
+  maximum number of arrays          52         200
+  maximum dynamic memory        254302      900000
+
+ ****************************************************************************************************
